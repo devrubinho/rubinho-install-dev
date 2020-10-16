@@ -1,570 +1,664 @@
 # Anotações - Monorepo com React
 
-## Passo 24
-Dentro de
-packages
-rodar no terminal:
+## Criar pasta web
 
-```npx create-react-app web --template typescript```
-
-## Passo 70
-Dentro de
-packages > web > tsconfig.json
-alterar todo o conteúdo para:
-
+```bash
+  # Abrir pasta packages
+  $ cd packages
+  # Rodar no terminal dentro da pasta packages
+  $ npx create-react-app web --template typescript
 ```
-{
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "lib": ["esnext", "dom"],   
-    "allowJs": false,          
-    "checkJs": false,         
-    "jsx": "react"
+
+## Alterar conteúdo tsconfig.json da pasta web
+
+
+```bash
+  # Abrir pastas packages/web/tsconfig.json para acessar o arquivo tsconfig.json
+  $ cd packages/web/tsconfig.json
+
+  # Alterar todo o conteúdo para:
+  
+  {
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+      "lib": ["esnext", "dom"],   
+      "allowJs": false,          
+      "checkJs": false,         
+      "jsx": "react"
+    },
+    "include": [
+      "./src/**/*"
+    ]
+  }
+```
+
+## Excluir tag de package.json da pasta web
+
+```bash
+  # Abrir pastas packages/web/package.json para acessar arquivo package.json
+  $ cd packages/web/package.json
+
+  # Apagar a seguinte tag:
+
+  "eslintConfig": {
+    "extends": "react-app"
   },
-  "include": [
-    "./src/**/*"
-  ]
-}
 ```
 
-## Passo 59
-Dentro de
-packages > web > package.json
-excluir a tag:
+## Excluir readme da pasta web
 
-```
-"eslintConfig": {
-  "extends": "react-app"
-},
+```bash
+  # Abrir pastas packages/web
+  $ cd packages/web
+
+  # Excluir o arquivo readme.md
 ```
 
-## Passo 25
-Dentro de
-packages > web
-excluir arquivo readme
+## Excluir arquivos desnecessários da pasta web/src
 
-## Passo 26
-Excluir arquivos desnecessários de
-packages > web > src
-deixando somente os arquivos App.tsx e index.tsx
-
-## Passo 27
-Trocar conteúdo de
-packages > web > src > index.tsx
-por: 
-
-```
-import React from "react";
-import ReactDOM from "react-dom";
-import App from "./App";
-
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-document.getElementById("root")
-);
+```bash
+  # Abrir pastas packages/web/src e acessar os arquivos da pasta src
+  $ cd packages/web/src
+  # Excluir arquivos desnecessários deixando somente os arquivos:
+  - App.tsx e index.tsx
 ```
 
-## Passo 28
-Trocar conteúdo de
-packages > web > src > App.tsx
-por:
+## Trocar conteúdo do index.tsx da pasta web/src
+
+```bash
+  # Abrir pastas packages/web/src/index.tsx
+  $ cd packages/web/src/index.tsx
+
+  # Trocar todo o conteúdo do index.tsx por:
+
+  import React from "react";
+  import ReactDOM from "react-dom";
+  import App from "./App";
+
+  ReactDOM.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>,
+  document.getElementById("root")
+  );
 
 ```
-import React from 'react';
 
-const App: React.FC = () => <h1>Projeto vazio</h1>
+## Trocar conteúdo do arquivo App.tsx da pasta web/src
 
-export default App;
+```bash
+  # Abrir pastas packages/web/src/App.tsx
+  $ cd packages/web/src/App.tsx
+
+  # Trocar todo o conteúdo do App.tsx para:
+
+  import React from 'react';
+
+  const App: React.FC = () => <h1>Projeto vazio</h1>
+
+  export default App;
 ```
 
-## Passo 29
-Excluir arquivos desnecessários de
-packages > web > public
-deixando somente os arquivos index.html e robots.txt
+## Excluir arquivos desnecessários da pasta web/public
+```bash 
+  # Abrir pastas packages/web/public
+  $ cd packages/web/public
 
-## Passo 30
-Dentro de 
-packages > web > public > index.html
-excluir comentários e as linhas:
-
-```
-<link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-<link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-<link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  # Excluir os arquivos desnecessários deixando somente os arquivos:
+  - index.html e robots.txt
 ```
 
-## Passo 31
-Dentro de 
-packages > web > package.json
-alterar nome do projeto para
-@NOME_DO_PROJETO/web
+## Excluir comentários e linhas do index.html da pasta web/public
 
-## Passo 32
-Dentro de
-packages > web
-rodar no terminal:
+```bash
+  # Abrir pastas  packages/web/public/index.html para acessar arquivo index.html
+  $ cd packages/web/public/index.html
 
-`yarn start`
-
-para testar a aplicação web
-
-## Passo 33
-Dentro de
-packages > web
-rodar no terminal:
-
-`yarn add styled-components polished`
-`yarn add @types/styled-components -D`
-
-## Passo 34
-Criar pasta
-packages > web > src > styled
-
-## ...
-Criar arquivo
-packages > web > src > global.ts
-
-## ...
-Dentro do arquivo
-packages > web > src > global.ts
-colocar conteúdo:
-
-```
-import { createGlobalStyle } from 'styled-components'
-
-export const GlobalStyle = createGlobalStyle`
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    outline: 0;
-  }
-
-  :root {
-    font-size: 62.5%;
-    --primary-color: #00b3b4;
-    --secondary-color: #0078b5;
-    --contrast-color: #fff;
-    --error-color: #c53030;
-  }
-
-  body {
-    background: var(--primary-color);
-    color: var(--font-color);
-    -webkit-font-smoothing: antialiased;
-  }
-
-  body, input, button {
-    font-family: 'Roboto', sans-serif;
-    font-size: 1.6rem;
-  }
-
-  button {
-    cursor: pointer;
-  }
-`
+  # Excluir os seguintes comentários e linhas:
+  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
 ```
 
-## ...
-Dentro de
-packages > web > src > App.tsx
-trocar conteúdo por:
+## Alterar nome do projeto do arquivo package.json da pasta web
 
-```
-import React from 'react'
-import { GlobalStyle } from './styles/global'
-
-const App: React.FC = () => (
-  <>
-    <p>Projeto vazio</p>
-    <GlobalStyle />
-  </>
-)
-
-export default App
+```bash
+  # Abrir pastas packages/web/package.json e acessar arquivo package.json
+  $ cd packages/web/package.json
+  # Alterar nome do projeto para:
+  @NOME_DO_PROJETO/web
 ```
 
-## ...
-Criar pasta
-packages > web > SignIn
+## Testar aplicação web
 
-## ...
-Criar arquivos
-packages > web > SignIn > index.tsx
-packages > web > SignIn > styles.ts
-
-## ...
-Dentro de 
-packages > web > SignIn > index.tsx
-colocar:
-
+```bash
+  # Abrir pastas packages/web
+  $ cd packages/web
+  # Rodar no terminal para testar a aplicação web:
+  $ yarn start
 ```
-import React from 'react'
 
-import { Container, Content } from './styles'
+## Adicionar dependências 
 
-const SignIn: React.FC = () => {
-  return (
-    <Container>
-      <Content>
-        <form>
-          <h1>Faça seu login</h1>
+```bash
+  # Abrir pastas packages/web
+  $ cd packages/web
+  # Rodar no terminal:
+  yarn add styled-components polished
+  yarn add @types/styled-components -D
+```
 
-          <input placeholder="E-mail" />
-          <input placeholder="Senha" type="password" />
-          <button type="submit">Entrar</button>
-        </form>
+## Criar pasta styled
 
-        <a href="teste">Criar Conta</a>
-      </Content>
-    </Container>
+```bash
+  # Abrir pastas packages/web/src
+  $ cd packages/web/src/
+  # Criar pasta styled
+  $ mkdir styled
+  # caminho das pastas packages/web/src/styled
+```
+
+## Criar arquivo global.ts da pasta web/src
+
+```bash
+  # Abrir pastas packages/web/src/global.ts e criar o arquivos global.ts
+  $ packages/web/src
+  # Crie o arquivo:
+   global.ts
+   # Caminho das pastas packages/web/src/global.ts
+```
+
+## Colocar conteúdo no arquivo global.ts
+
+```bash
+  # Abrir pastas packages/web/src/global.ts
+  $ cd packages/web/src/global.ts
+
+  # Colocar o conteúdo abaixo no arquivo global.ts:
+
+  import { createGlobalStyle } from 'styled-components'
+
+  export const GlobalStyle = createGlobalStyle`
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      outline: 0;
+    }
+
+    :root {
+      font-size: 62.5%;
+      --primary-color: #00b3b4;
+      --secondary-color: #0078b5;
+      --contrast-color: #fff;
+      --error-color: #c53030;
+    }
+
+    body {
+      background: var(--primary-color);
+      color: var(--font-color);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body, input, button {
+      font-family: 'Roboto', sans-serif;
+      font-size: 1.6rem;
+    }
+
+    button {
+      cursor: pointer;
+    }
+  
+```
+
+## Trocar conteúdo do arquivo App.tsx da pasta web/src
+
+
+```bash
+  # Abrir pastas packages/web/src/App.tsx para acessar o arquivo App.tsx
+  $ cd packages/web/src/App.tsx
+
+  # Trocar o conteúdo do arquivo App.tsx para:
+
+  import React from 'react'
+  import { GlobalStyle } from './styles/global'
+
+  const App: React.FC = () => (
+    <>
+      <p>Projeto vazio</p>
+      <GlobalStyle />
+    </>
   )
-}
+
+  export default App
+```
+
+## Criar pasta SignIn dentro da pasta web
+
+```bash
+  # Abrir pastas packages/web
+  $ cd packages/web/
+  # Criar a pasta SignIn
+  $ mkdir SignIn
+  # Caminho das pastas packages/web/SignIn
+```
+
+## Criar arquivos index.tsx e styles.ts na pasta SignIn
+
+```bash
+  # Abrir pastas packages/web/SignIn
+  $ cd packages/web/SignIn
+  # Crie os arquivos abaixo dentro da pasta SignIn
+  - index.tsx e o styles.ts
+```
+## Colocar conteúdo no arquivo index.tsx da pasta SignIn
+
+```bash
+  # Abrir pastas packages/web/SignIn/index.tsx para acessar o arquivo index.tsx
+  $ cd packages/web/SignIn/index.tsx
+
+  # Colocar no arquivo index.tsx o seguinte conteúdo:
+
+  import React from 'react'
+
+  import { Container, Content } from './styles'
+
+  const SignIn: React.FC = () => {
+    return (
+      <Container>
+        <Content>
+          <form>
+            <h1>Faça seu login</h1>
+
+            <input placeholder="E-mail" />
+            <input placeholder="Senha" type="password" />
+            <button type="submit">Entrar</button>
+          </form>
+
+          <a href="teste">Criar Conta</a>
+        </Content>
+      </Container>
+    )
+  }
 
 export default SignIn
 ```
 
-## ...
-Dentro de
-packages > web > SignIn > styles.ts
-colocar:
+## Colocar conteúdo no arquivo styles.ts da pasta SignIn
 
-```
-import styled from 'styled-components'
-import { shade } from 'polished'
+```bash
+  # Abrir pastas packages/web/SignIn/styles.ts
+  $ cd packages/web/SignIn/styles.ts
 
-export const Container = styled.div`
-  height: 100vh; // Forçar a altura da tela ser a altura total do navegador
+  # Adicione no arquivo styles.ts o seguinte conteúdo:
 
-  display: flex;
-  justify-content: center;
-  align-items: stretch; // Força os elementos filhos esticarem para terem 100vh;
-`
+  import styled from 'styled-components'
+  import { shade } from 'polished'
 
-export const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  export const Container = styled.div`
+    height: 100vh; // Forçar a altura da tela ser a altura total do navegador
 
-  width: 100%;
-  max-width: 70rem;
+    display: flex;
+    justify-content: center;
+    align-items: stretch; // Força os elementos filhos esticarem para terem 100vh;
+  `
 
-  form {
-    margin: 8rem 0;
-    width: 34rem;
-    text-align: center;
+  export const Content = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
-    h1 {
-      margin-bottom: 2.4rem;
-      color: var(--contrast-color);
-    }
+    width: 100%;
+    max-width: 70rem;
 
-    input {
-      background: var(--contrast-color);
-      border-radius: 10px;
-      border: 2px solid var(--contrast-color);
-      padding: 1.6rem;
-      width: 100%;
+    form {
+      margin: 8rem 0;
+      width: 34rem;
+      text-align: center;
 
-      & + input {
-        margin-top: 0.8rem;
+      h1 {
+        margin-bottom: 2.4rem;
+        color: var(--contrast-color);
+      }
+
+      input {
+        background: var(--contrast-color);
+        border-radius: 10px;
+        border: 2px solid var(--contrast-color);
+        padding: 1.6rem;
+        width: 100%;
+
+        & + input {
+          margin-top: 0.8rem;
+        }
+      }
+
+      button {
+        background: var(--secondary-color);
+        height: 56px;
+        border-radius: 10px;
+        border: 0;
+        padding: 0 1.6rem;
+        width: 100%;
+        color: var(--contrast-color);
+        margin-top: 1.6rem;
+        transition: background-color 0.2s;
+
+        &:hover {
+          background: ${shade(0.2, '#0078b5')};
+        }
       }
     }
 
-    button {
-      background: var(--secondary-color);
-      height: 56px;
-      border-radius: 10px;
-      border: 0;
-      padding: 0 1.6rem;
-      width: 100%;
+    a {
       color: var(--contrast-color);
-      margin-top: 1.6rem;
-      transition: background-color 0.2s;
+      display: block;
+      margin-top: 2.4rem;
+      text-decoration: none;
+      transition: color 0.2s;
 
       &:hover {
-        background: ${shade(0.2, '#0078b5')};
+        color: ${shade(0.2, '#fff')};
       }
     }
-  }
-
-  a {
-    color: var(--contrast-color);
-    display: block;
-    margin-top: 2.4rem;
-    text-decoration: none;
-    transition: color 0.2s;
-
-    &:hover {
-      color: ${shade(0.2, '#fff')};
-    }
-  }
-`
+  `
 ```
 
-## ...
-Dentro de
-packages > web > src > App.tsx
-trocar conteúdo por:
+## Trocar conteúdo do arquivo App.tsx da pasta web/src
 
-```
-import React from 'react'
-import SignIn from './pages/SignIn'
-import { GlobalStyle } from './styles/global'
+```bash
+  # Abrir pastas packages/web/src/App.tsx
+  $ cd packages/web/src/App.tsx
 
-const App: React.FC = () => (
-  <>
-    <SignIn />
-    <GlobalStyle />
-  </>
-)
+  # Troque o conteúdo arquivo App.tsx  por:
+  import React from 'react'
+  import SignIn from './pages/SignIn'
+  import { GlobalStyle } from './styles/global'
 
-export default App
-```
-
-## ...
-Dentro de
-packages > web
-
-`yarn add react-icons @unform/core @unform/web`
-
-## ...
-criar pasta
-packages > web > src > components > Input
-
-## ... 
-criar arquivo
-packages > web > src > components > Input > index.tsx
-e dentro colocar:
-
-```
-import React, {
-  InputHTMLAttributes,
-  useEffect,
-  useRef,
-  useState,
-  useCallback
-} from 'react'
-import { IconBaseProps } from 'react-icons'
-import { FiAlertCircle } from 'react-icons/fi'
-import { useField } from '@unform/core'
-
-import { Container, Error } from './styles'
-
-interface IInputProps extends InputHTMLAttributes<HTMLInputElement> {
-  name: string
-  containerStyle?: Object
-  icon: React.ComponentType<IconBaseProps>
-}
-
-const Input: React.FC<IInputProps> = ({
-  name,
-  containerStyle = {},
-  icon: Icon,
-  ...rest
-}) => {
-  const inputRef = useRef<HTMLInputElement>(null)
-
-  const [isFocused, setIsFocused] = useState(false)
-  const [isFilled, setIsFilled] = useState(false)
-
-  const { fieldName, defaultValue, error, registerField } = useField(name)
-
-  const handleInputFocus = useCallback(() => {
-    setIsFocused(true)
-  }, [])
-
-  const handleInputBlur = useCallback(() => {
-    setIsFocused(false)
-
-    setIsFilled(!!inputRef.current?.value)
-  }, [])
-
-  useEffect(() => {
-    registerField({
-      name: fieldName,
-      ref: inputRef.current,
-      path: 'value'
-    })
-  }, [fieldName, registerField])
-
-  return (
-    <Container
-      style={containerStyle}
-      isErrored={!!error}
-      isFilled={isFilled}
-      isFocused={isFocused}
-      data-testid="input-container"
-    >
-      {Icon && <Icon size={20} />}
-      <input
-        onFocus={handleInputFocus}
-        onBlur={handleInputBlur}
-        defaultValue={defaultValue}
-        ref={inputRef}
-        {...rest}
-      />
-      {error && (
-        <Error title={error}>
-          <FiAlertCircle color="var(--error-color)" size={20} />
-        </Error>
-      )}
-    </Container>
+  const App: React.FC = () => (
+    <>
+      <SignIn />
+      <GlobalStyle />
+    </>
   )
-}
 
-export default Input
+  export default App
 ```
 
-## ... 
-criar arquivo
-packages > web > src > components > Input > styles.ts
-e dentro colocar:
+## Adicionar dependencia de icones
+
+```bash
+  # Abrir pastas packages/web
+  $ cd packages/web
+  # Rodar no terminal dentro da pasta web:
+  $ yarn add react-icons @unform/core @unform/web
 
 ```
-import styled, { css } from 'styled-components'
 
-import Tooltip from '../Tooltip'
+## Criar pastas components e Input
 
-interface IContainerProps {
-  isFocused: boolean
-  isFilled: boolean
-  isErrored: boolean
-}
+```bash
+  # Abrir pastas packages/web/src
+  $ cd packages/web/src
+  # Criar a pasta 
+  $ mkdir components
+  # Entrar na pasta components 
+  $ cd components
+  # Criar a pasta Input
+  $ mkdir Input
+  # Caminho das pastas packages/web/src/components/Input
 
-export const Container = styled.div<IContainerProps>`
-  background: var(--contrast-color);
-  border-radius: 10px;
-  padding: 1.6rem;
-  width: 100%;
-  border: 2px solid var(--contrast-color);
-  display: flex;
-  align-items: center;
-  & + div {
-    margin-top: 0.8rem;
-  }
-  ${props =>
-    props.isErrored &&
-    css`
-      border-color: var(--error-color);
-    `}
-  ${props =>
-    props.isFocused &&
-    css`
-      color: var(--secondary-color);
-      border-color: var(--secondary-color);
-    `}
-  ${props =>
-    props.isFilled &&
-    css`
-      color: var(--secondary-color);
-    `}
-  input {
-    flex: 1;
-    background: transparent;
-    border: 0;
-  }
-  svg {
-    margin-right: 1.6rem;
-  }
-`
+```
 
-export const Error = styled(Tooltip)`
-  height: 20px;
-  margin-left: 1.6rem;
-  svg {
-    margin: 0;
+## Criar arquivo index.tsx dentro da pasta Input e adicionar conteúdo
+
+```bash
+  # Abrir pastas packages/web/src/components/Input/index.tsx para acessar o arquivo index.tsx
+  $ cd packages/web/src/components/Input/index.tsx
+  # Crie o arquivo index.tsx dentro da pasta Input
+
+  # Adicione no arquivo index.tsx o seguinte conteúdo:
+
+  import React, {
+    InputHTMLAttributes,
+    useEffect,
+    useRef,
+    useState,
+    useCallback
+  } from 'react'
+  import { IconBaseProps } from 'react-icons'
+  import { FiAlertCircle } from 'react-icons/fi'
+  import { useField } from '@unform/core'
+
+  import { Container, Error } from './styles'
+
+  interface IInputProps extends InputHTMLAttributes<HTMLInputElement> {
+    name: string
+    containerStyle?: Object
+    icon: React.ComponentType<IconBaseProps>
   }
-  span {
-    background: var(--error-color);
-    color: #fff;
-    &::before {
-      border-color: var(--error-color) transparent;
+
+  const Input: React.FC<IInputProps> = ({
+    name,
+    containerStyle = {},
+    icon: Icon,
+    ...rest
+  }) => {
+    const inputRef = useRef<HTMLInputElement>(null)
+
+    const [isFocused, setIsFocused] = useState(false)
+    const [isFilled, setIsFilled] = useState(false)
+
+    const { fieldName, defaultValue, error, registerField } = useField(name)
+
+    const handleInputFocus = useCallback(() => {
+      setIsFocused(true)
+    }, [])
+
+    const handleInputBlur = useCallback(() => {
+      setIsFocused(false)
+
+      setIsFilled(!!inputRef.current?.value)
+    }, [])
+
+    useEffect(() => {
+      registerField({
+        name: fieldName,
+        ref: inputRef.current,
+        path: 'value'
+      })
+    }, [fieldName, registerField])
+
+    return (
+      <Container
+        style={containerStyle}
+        isErrored={!!error}
+        isFilled={isFilled}
+        isFocused={isFocused}
+        data-testid="input-container"
+      >
+        {Icon && <Icon size={20} />}
+        <input
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
+          defaultValue={defaultValue}
+          ref={inputRef}
+          {...rest}
+        />
+        {error && (
+          <Error title={error}>
+            <FiAlertCircle color="var(--error-color)" size={20} />
+          </Error>
+        )}
+      </Container>
+    )
+  }
+
+  export default Input
+```
+
+## Criar arquivo styles.ts e adicionar conteúdo
+
+```bash
+  # Abrir pastas packages/web/src/components/Input
+  $ cd packages/web/src/components/Input
+  # Crie o arquivo styles.ts dentro da pasta Input
+
+  # Adicione no arquivo styles.ts o seguinte conteúdo:
+
+  import styled, { css } from 'styled-components'
+
+  import Tooltip from '../Tooltip'
+
+  interface IContainerProps {
+    isFocused: boolean
+    isFilled: boolean
+    isErrored: boolean
+  }
+
+  export const Container = styled.div<IContainerProps>`
+    background: var(--contrast-color);
+    border-radius: 10px;
+    padding: 1.6rem;
+    width: 100%;
+    border: 2px solid var(--contrast-color);
+    display: flex;
+    align-items: center;
+    & + div {
+      margin-top: 0.8rem;
     }
+    ${props =>
+      props.isErrored &&
+      css`
+        border-color: var(--error-color);
+      `}
+    ${props =>
+      props.isFocused &&
+      css`
+        color: var(--secondary-color);
+        border-color: var(--secondary-color);
+      `}
+    ${props =>
+      props.isFilled &&
+      css`
+        color: var(--secondary-color);
+      `}
+    input {
+      flex: 1;
+      background: transparent;
+      border: 0;
+    }
+    svg {
+      margin-right: 1.6rem;
+    }
+  `
+
+  export const Error = styled(Tooltip)`
+    height: 20px;
+    margin-left: 1.6rem;
+    svg {
+      margin: 0;
+    }
+    span {
+      background: var(--error-color);
+      color: #fff;
+      &::before {
+        border-color: var(--error-color) transparent;
+      }
+    }
+  `
+
+```
+
+## Criar pasta Tooltip
+
+```bash
+  # Abrir pastas packages/web/src/components
+  $ cd packages/web/src/components
+  # Dentro da pasta components criar a pasta Tooltip
+  $ mkdir Tooltip
+  # Caminho das pastas packages/web/src/components/Tooltip
+```
+
+## Criar arquivo index.tsx dentro da pasta Tooltip
+
+```bash
+  # Abrir pastas packages/web/src/components/Tooltip
+  $ cd packages/web/src/components/Tooltip
+  # Crie o arquivo index.tsx
+
+  # Adicione no arquivo index.tsx da pasta Tooltip o seguinte conteúdo:
+
+  import React from 'react'
+
+  import { Container } from './styles'
+
+  interface ITooltipProps {
+    title: string
+    className?: string
   }
-`
 
+  const Tooltip: React.FC<ITooltipProps> = ({
+    title,
+    className = '',
+    children,
+  }) => {
+    return (
+      <Container className={className}>
+        {children}
+        <span>{title}</span>
+      </Container>
+    )
+  }
+
+  export default Tooltip
 ```
 
-## ... 
-criar pasta
-packages > web > src > components > Tooltip
+## Criar arquivo styles.ts dentro da pasta Tooltip 
 
-## ... 
-criar arquivo
-packages > web > src > components > Tooltip > index.tsx
-colocar:
+```bash
+  # Abrir pastas packages/web/src/components/Tooltip/styles.ts
+  $ cd packages/web/src/components/Tooltip
+  # Crie na pasta Tooltip o arquivo styles.ts
 
-```
-import React from 'react'
+  # Adicione no arquivo styles.ts da pasta Tooltip o seguinte conteúdo:
 
-import { Container } from './styles'
+  import styled from 'styled-components'
 
-interface ITooltipProps {
-  title: string
-  className?: string
-}
-
-const Tooltip: React.FC<ITooltipProps> = ({
-  title,
-  className = '',
-  children,
-}) => {
-  return (
-    <Container className={className}>
-      {children}
-      <span>{title}</span>
-    </Container>
-  )
-}
-
-export default Tooltip
-```
-
-## ... 
-criar arquivo
-packages > web > src > components > Tooltip > styles.ts
-e dentro colocar:
-
-```
-import styled from 'styled-components'
-
-export const Container = styled.div`
-  position: relative;
-  span {
-    width: 160px;
-    background: var(--secondary-color);
-    padding: 0.8rem;
-    border-radius: 4px;
-    font-size: 1.4rem;
-    font-weight: 500;
-    opacity: 0;
-    transition: opacity 0.4s;
-    visibility: hidden;
-    position: absolute;
-    bottom: calc(100% + 12px);
-    left: 50%;
-    transform: translateX(-50%);
-    color: var(--primary-color);
-    &::before {
-      content: '';
-      border-style: solid;
-      border-color: var(--secondary-color) transparent;
-      border-width: 6px 6px 0 6px;
-      top: 100%;
+  export const Container = styled.div`
+    position: relative;
+    span {
+      width: 160px;
+      background: var(--secondary-color);
+      padding: 0.8rem;
+      border-radius: 4px;
+      font-size: 1.4rem;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity 0.4s;
+      visibility: hidden;
       position: absolute;
+      bottom: calc(100% + 12px);
       left: 50%;
       transform: translateX(-50%);
+      color: var(--primary-color);
+      &::before {
+        content: '';
+        border-style: solid;
+        border-color: var(--secondary-color) transparent;
+        border-width: 6px 6px 0 6px;
+        top: 100%;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+      }
     }
-  }
-  &:hover span {
-    opacity: 1;
-    visibility: visible;
-  }
-`
+    &:hover span {
+      opacity: 1;
+      visibility: visible;
+    }
+  
 ```
 
 ## ...
