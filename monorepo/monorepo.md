@@ -320,7 +320,7 @@ Caso precise do axios ou de testes com jest volte para esse tutorial para contin
   "main": "index.ts",
 ```
 
-## Como usar o axios nos projetos
+## Como usar o axios nos projetos (alterar)
 
 Dentro do projeto que você deseja usar, como o web, adicione
 "@NOME_DO_PROJETO/axios-config": "*"

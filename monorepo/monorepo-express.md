@@ -72,8 +72,8 @@ Colar no arquivo criado acima
 ```
 ## Criar arquivo server.ts
 ```bash
-  # Dentro de packages/server
-  $ cd packages/server
+  # Dentro de packages/server/src
+  $ cd packages/server/src
   # criar arquivo
   server.ts
 ```
