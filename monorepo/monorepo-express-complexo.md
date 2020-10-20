@@ -1580,7 +1580,7 @@ class SendForgotPasswordEmailService {
         name: user.name,
         email: user.email,
       },
-      subject: '[GoBarber] Recuperação de senha',
+      subject: '[Equipe x] Recuperação de senha',
       templateData: {
         file: forgotPasswordTemplate,
         variables: {
@@ -1891,6 +1891,36 @@ rodar no terminal:
 
 `yarn add handlebars nodemailer`
 
+## ...
+Criar pasta
+packates > server > src > modules > users > views
+
+## ...
+Criar arquivo
+packates > server > src > modules > users > views > forgot_password.hbs
+e dentro colocar:
+
+```
+<style>
+  .message-content {
+    font-family: Arial, Helvetica, sans-serif;
+    max-width: 600px;
+    font-size: 18px;
+    line-height: 21px;
+  }
+</style>
+
+<div class="message-content">
+  <p>Olá, {{name}}</p>
+  <p>Parece que uma troca de senha para sua conta foi solicitada.</p>
+  <p>Se foi você, então clique no link abaixo para escolher uma nova senha:</p>
+  <p>
+    <a href="{{link}}">Resetar senha</a>
+  </p>
+  <p>Se não foi você, então descarte esse email!</p>
+  <strong>Equipe X</strong>
+</div>
+```
 ## ...
 Criar arquivo
 packages > server > src > modules > users > infra > http > routes > profile.routes.ts
@@ -2222,4 +2252,91 @@ public async down(queryRunner: QueryRunner): Promise<void> {
 ## ...
 Dentro de packages > server
 rodar no terminal 
+`yarn typeorm migration:create -n CreateUserTokens`
+
+## ..
+Dentro de
+packages > server > src > shared > infra > typeorm > migrations
+na migration criada alterar os métodos up e down por:
+
+```
+public async up(queryRunner: QueryRunner): Promise<void> {
+  await queryRunner.createTable(
+    new Table({
+      name: 'user_tokens',
+      columns: [
+        {
+          name: 'id',
+          type: 'uuid',
+          isPrimary: true,
+          generationStrategy: 'uuid',
+          default: 'uuid_generate_v4()'
+        },
+        {
+          name: 'token',
+          type: 'uuid',
+          generationStrategy: 'uuid',
+          default: 'uuid_generate_v4()'
+        },
+        {
+          name: 'user_id',
+          type: 'uuid'
+        },
+        {
+          name: 'created_at',
+          type: 'timestamp',
+          default: 'now()'
+        },
+        {
+          name: 'updated_at',
+          type: 'timestamp',
+          default: 'now()'
+        }
+      ],
+      foreignKeys: [
+        {
+          name: 'TokenUser',
+          referencedTableName: 'users',
+          referencedColumnNames: ['id'],
+          columnNames: ['user_id'],
+          onDelete: 'CASCADE',
+          onUpdate: 'CASCADE'
+        }
+      ]
+    })
+  )
+}
+
+public async down(queryRunner: QueryRunner): Promise<void> {
+  await queryRunner.dropTable('user_tokens')
+}
+```
+
+## ...
+Dentro de packages > server
+rodar no terminal 
 `yarn typeorm migration:run`
+
+## ..
+Criar pasta
+packages > server > tmp
+
+## ..
+Criar pasta
+packages > server > tmp > uploads
+
+## ..
+Criar arquivo
+packages > server > tmp > uploads > .gitkeep
+
+## ..
+Dentro de
+packages > server > .gitignore
+adicionar:
+
+```
+tmp/uploads/*
+!tmp/uploads/.gitkeep
+```
+
+Obs: Se necessário excluir com git rm arquivos indesejados do controle de versão
