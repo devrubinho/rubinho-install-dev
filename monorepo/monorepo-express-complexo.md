@@ -158,99 +158,129 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
 ```
 **Faça isso para testar se tudo está ok**
 
-## ...
-Criar pasta
-packages > server > src > modules
-
-## ...
-Criar pasta
-packages > server > src > modules > users
-
-## ...
-Criar pasta
-packages > server > src > shared
-
-## ...
-Criar pasta
-packages > server > src > shared > infra
-
-## ...
-Criar pasta
-packages > server > src > shared > errors
-
-## ...
-Criar arquivo
-packages > server > src > shared > errors > AppError.ts
-e dentro colocar:
-
+## Criar pasta module dentro da pasta server/src
+```bash
+  # Abrir pastas packages/server/src para criar pasta modules
+  $ cd packages/server/src
+  # Criar pasta modules
+  $ mkdir modules
+  # Caminho das pastas packages/server/src/modules
 ```
-class AppError {
-  public readonly message: string
-
-  public readonly statusCode: number
-
-  constructor(message: string, statusCode = 400) {
-    this.message = message
-    this.statusCode = statusCode
-  }
-}
-
-export default AppError
+## Criar pasta users dentro da pasta modules
+```bash
+  # Abrir pastas packages/server/src/modules para criar a pasta users
+  $ cd packages/server/src/modules
+  # Criar pasta users
+  $ mkdir users
+  # Caminho das pastas packages/server/src/modules/users
+```
+## Criar pasta shared 
+```bash
+  # Abrir pastas packages/server/src para criar a pasta shared
+  $ cd packages/server/src
+  # Criar pasta shared
+  $ mkdir shared
+  # Caminho das pastas packages/server/src/shared
 ```
 
-## ...
-Criar pasta
-packages > server > src > shared > infra > http
-
-## ...
-Mover arquivo server.ts para dentro de 
-packages > server > src > shared > infra > http
-fica assim:
-packages > server > src > shared > infra > http > server.ts
-
-## ...
-Alterar arquivo
-tsconfig.json
-
+## Criar pasta infra dentro da pasta shared
+```bash
+  # Abrir pastas packages/server/src/shared para criar a pasta infra
+  $ cd packages/server/src/shared
+  # Criar pasta infra
+  $ mkdir infra
+  # Caminho das pastas packages/server/src/shared/infra
 ```
-{
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "baseUrl": "./src",
-    "outDir": "./dist",                        
-    "rootDir": "./src",  
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "strictPropertyInitialization": false,
-    "allowJs": true,
-    "paths": {
-      "@modules/*": ["modules/*"],
-      "@config/*": ["config/*"],
-      "@shared/*": ["shared/*"]
+
+## Criar pasta errors dentro da pasta shared
+```bash
+  # Abrir pastas packages/server/src/shared para criar pasta errors
+  $ cd packages/server/src/shared
+  # Criar pasta errors
+  $ mkdir errors
+  # Caminho das pastas packages/server/src/shared/errors
+```
+
+## Criar arquivo AppError.ts dentro da pasta errors
+```bash
+  # Abrir pastas packages/server/src/shared/errors para criar arquivo AppError.ts
+  $ cd packages/server/src/shared/errors
+  # Crie o arquivo AppError.ts dentro da pasta errors
+
+  # Dentro do arquivo AppError.ts adicionar:
+    class AppError {
+      public readonly message: string
+
+      public readonly statusCode: number
+
+      constructor(message: string, statusCode = 400) {
+        this.message = message
+        this.statusCode = statusCode
+      }
     }
+
+    export default AppError
+```
+
+## Criar pasta http dentro da pasta infra
+```bash
+  # Abrir pastas packages/server/src/shared/infra para criar a pasta http
+  $ cd packages/server/src/shared/infra
+  # Criar pasta http
+  $ mkdir http
+  # Caminho das pastas packages/server/src/shared/infra/htpp
+```
+## Mover arquivo server.ts para pasta http
+```bash
+  # Mova o arquivo server.ts para dentro da pasta http
+  # Caminhos das pastas até o arquivo
+  # packages/server/src/shared/infra/http/server.ts
+```
+
+## Alterar arquivo tsconfig.json
+
+```bash
+  # Alterar arquivo tsconfig.json para:
+
+  {
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+      "baseUrl": "./src",
+      "outDir": "./dist",                        
+      "rootDir": "./src",  
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+      "strictPropertyInitialization": false,
+      "allowJs": true,
+      "paths": {
+        "@modules/*": ["modules/*"],
+        "@config/*": ["config/*"],
+        "@shared/*": ["shared/*"]
+      }
+    },
+    "include": ["./src/**/*"]
+  }
+```
+
+## Adicionar dependência dentro da pasta server
+```bash
+  # Abrir pastas packages/server
+  $ cd packages/server
+  # Dentro da pasta server rodar no terminal:
+  $ yarn add tsconfig-paths -D
+```
+
+## Alterar tags scripts do arquivo package.json
+```bash
+  # abrir pastas packages/server/package.json para acessar arquivo package.json
+  $ cd packages/server/package.json
+  # Alterar as tags scripts para:
+  "scripts": {
+    "build": "tsc",
+    "dev:server": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/shared/infra/http/server.ts",
+    "typeorm": "ts-node-dev -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "test": "jest"
   },
-  "include": ["./src/**/*"]
-}
-```
-
-## ...
-Dentro de packages > server
-dentro de terminal rodar:
-
-`yarn add tsconfig-paths -D`
-
-## ...
-Alterar tag scripts de
-packages > server > package.json
-para:
-
-```
-"scripts": {
-  "build": "tsc",
-  "dev:server": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/shared/infra/http/server.ts",
-  "typeorm": "ts-node-dev -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
-  "test": "jest"
-},
 ```
 
 ## ...
