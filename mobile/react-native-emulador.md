@@ -15,6 +15,9 @@
 
 `adb devices`
 
+### Quando for usar o emulador para acessar a api na rota 3333
+`adb reverse tcp:3333 tcp:3333`
+
 ## IOS
 
 ### Listar emuladores iOS disponíveis
