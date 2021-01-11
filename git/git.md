@@ -26,6 +26,11 @@
 `git checkout NOME_DO_BRANCH`
 >Exemplo: git checkout master volta para o master
 
+## Push para branch não master
+
+`git push origin NOME_DO_BRANCH`
+>Exemplo: git push origin dev
+
 ## Desfazer um commit errado em uma branch errada
 
 > Muda para a branch errada (onde o commit foi feito) e mostra o log, assim você identifica o commit e pega o id do commit 
