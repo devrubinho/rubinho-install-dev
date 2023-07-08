@@ -6,7 +6,8 @@
 	"editor.fontSize": 13,
 	"editor.fontLigatures": true,
 	"editor.codeActionsOnSave": {
-		"source.fixAll.eslint": true
+		"source.fixAll.eslint": true,
+		"source.addMissingImports": true
 	},
 	"[prisma]": {
 		"editor.defaultFormatter": "Prisma.prisma"
@@ -15,9 +16,7 @@
 	"editor.renderWhitespace": "boundary",
 	"editor.tabSize": 2,
 	"terminal.integrated.fontSize": 14.5,
-	"workbench.colorTheme": "Shades of Purple",
 	"explorer.confirmDelete": false,
-	"eslint.alwaysShowStatus": true,
 	"workbench.iconTheme": "vscode-icons",
 	"vsicons.dontShowNewVersionMessage": true,
 	"security.workspace.trust.untrustedFiles": "open",
@@ -31,6 +30,7 @@
 	"editor.bracketPairColorization.enabled": true,
   "editor.guides.bracketPairs":"active",
 	"terminal.integrated.fontFamily": "'MesloLGS NF'",
-	"window.zoomLevel": 1
+	"window.zoomLevel": 1,
+	"workbench.colorTheme": "Shades of Purple"
 }
 ```
