@@ -2,7 +2,7 @@
 ```
 {
 	"editor.letterSpacing": 1.2,
-	"editor.fontFamily": "JetBrains Mono",
+	"editor.fontFamily": "Fira Code",
 	"editor.fontSize": 13,
 	"editor.fontLigatures": true,
 	"editor.codeActionsOnSave": {
@@ -36,7 +36,9 @@
 	"git-autoconfig.ignoreRootList": [
 		"/home/rubens/repos/ricardo/flow-roll-backend-service"
 	],
-	"workbench.colorTheme": "Beautiful Dracula Normal",
-	"workbench.iconTheme": "bearded-icons"
+	"workbench.colorTheme": "Shades of Purple",
+	"workbench.iconTheme": "bearded-icons",
+	"workbench.activityBar.location": "top",
+	"window.customTitleBarVisibility": "auto"
 }
 ```
