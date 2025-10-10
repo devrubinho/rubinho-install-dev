@@ -9,3 +9,4 @@ fc-cache -fv
 
 rm JetBrainsMono.zip
 ```
+
