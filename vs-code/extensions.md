@@ -5,13 +5,11 @@
 - Color highlight
 - DotENV
 - ESLint
-- Git Blame
 - Expo tools
-- Git lens
+- Git lens (apenas esse)
 - HashiCorp Terraform
 - Markdown Preview Enhanced
 - Prisma
-- Prisma - Insider
 - px to rem
 - Reload
 - Tailwind CSS IntelliSense
