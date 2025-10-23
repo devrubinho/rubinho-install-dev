@@ -1,95 +1,169 @@
 {
-  // =======================
-  // Janela e interface
-  // =======================
-  "window.zoomLevel": 1,
-  "workbench.startupEditor": "none",
-  "workbench.colorTheme": "Min Dark",
-  "workbench.iconTheme": "symbols",
-  "workbench.activityBar.location": "top",
-  "workbench.statusBar.visible": false,
-  "window.titleBarStyle": "custom",
-  "window.title": "${dirty}${activeEditorShort}${separator}${rootName}",
-  "window.commandCenter": false,
+    // =======================
+    // Janela e interface
+    // =======================
+    "window.zoomLevel": 1,
+    "window.titleBarStyle": "custom",
+    "window.title": "${dirty}${activeEditorShort}${separator}${rootName}",
+    "window.commandCenter": false,
+    "window.restoreWindows": "all",
+    "workbench.startupEditor": "none",
+    "workbench.colorTheme": "Min Dark",
+    "workbench.iconTheme": "symbols",
+    "workbench.activityBar.location": "top",
+    "workbench.statusBar.visible": false,
+    "workbench.editor.labelFormat": "short",
+    "workbench.layoutControl.enabled": false,
+    "workbench.editor.enablePreview": false,
 
-  // =======================
-  // Editor
-  // =======================
-  "editor.fontFamily": "JetBrainsMono Nerd Font",
-  "editor.fontSize": 14,
-  "editor.lineHeight": 1.8,
-  "editor.rulers": [80, 120],
-  "editor.renderLineHighlight": "gutter",
-  "editor.fontLigatures": true,
-  "editor.semanticHighlighting.enabled": false,
-  "editor.minimap.enabled": false,
-  "editor.scrollbar.vertical": "visible",
-  "editor.scrollbar.horizontal": "hidden",
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit",
-    "source.addMissingImports": "explicit"
-  },
+    // =======================
+    // Editor
+    // =======================
+    "editor.fontFamily": "JetBrainsMono Nerd Font",
+    "editor.fontSize": 14,
+    "editor.lineHeight": 1.6,
+    "editor.rulers": [80, 120],
+    "editor.renderLineHighlight": "line",
+    "editor.fontLigatures": true,
+    "editor.minimap.enabled": false,
+    "editor.scrollbar.vertical": "auto",
+    "editor.scrollbar.horizontal": "hidden",
+    "editor.cursorSmoothCaretAnimation": "on",
+    "editor.cursorBlinking": "smooth",
+    "editor.stickyScroll.enabled": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit",
+        "source.addMissingImports": "explicit"
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[typescript]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescriptreact]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[prisma]": {
+        "editor.formatOnSave": true
+    },
 
-  // =======================
-  // Workbench e abas
-  // =======================
-  "workbench.editor.labelFormat": "short",
-  "workbench.layoutControl.enabled": false,
+    // =======================
+    // Explorer
+    // =======================
+    "explorer.compactFolders": false,
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.patterns": {
+        "package.json": "package*, pnpm-lock*, yarn-lock*, .eslint*, tsconfig*, vite.config*, next.config*",
+        "tailwind.config*": "tailwind.config*, postcss.config*",
+        ".env": ".env*",
+        "docker-compose.yml": "Dockerfile, .dockerignore"
+    },
+    "breadcrumbs.enabled": false,
+    "symbols.hidesExplorerArrows": false,
 
-  // =======================
-  // Explorer
-  // =======================
-  "explorer.compactFolders": false,
-  "explorer.fileNesting.enabled": true,
-  "explorer.fileNesting.patterns": {
-    "package.json": "package*, pnpm-lock*, yarn-lock*, .eslint*, tsconfig*",
-    "tailwind.config*": "tailwind.config*, postcss.config*",
-    ".env": ".env*"
-  },
-  "breadcrumbs.enabled": false,
-  "symbols.hidesExplorerArrows": false,
+    // =======================
+    // Terminal
+    // =======================
+    "terminal.integrated.fontSize": 14,
+    "terminal.integrated.fontFamily": "JetBrainsMono Nerd Font",
+    "terminal.integrated.scrollback": 5000,
 
-  // =======================
-  // Terminal
-  // =======================
-  "terminal.integrated.fontSize": 14,
-  "terminal.integrated.fontFamily": "JetBrainsMono Nerd Font",
+    // =======================
+    // Segurança e privacidade
+    // =======================
+    "security.workspace.trust.untrustedFiles": "open",
+    "security.workspace.trust.banner": "never",
+    "extensions.ignoreRecommendations": false,
+    "telemetry.telemetryLevel": "off",
 
-  // =======================
-  // Segurança e trust
-  // =======================
-  "security.workspace.trust.untrustedFiles": "open",
-  "extensions.ignoreRecommendations": true,
+    // =======================
+    // TypeScript / JavaScript
+    // =======================
+    "typescript.preferences.importModuleSpecifier": "non-relative",
+    "javascript.preferences.importModuleSpecifier": "non-relative",
+    "typescript.preferences.autoImportFileExcludePatterns": [
+        "**/node_modules/lodash/**",
+        "**/node_modules/moment/**"
+    ],
+    "javascript.preferences.autoImportFileExcludePatterns": [
+        "**/node_modules/lodash/**",
+        "**/node_modules/moment/**"
+    ],
+    "typescript.preferences.includePackageJsonAutoImports": "auto",
+    "typescript.suggest.autoImports": true,
+    "typescript.tsserver.watchOptions": {
+        "watchFile": "useFsEventsOnParentDirectory",
+        "watchDirectory": "useFsEvents",
+        "fallbackPolling": "dynamicPriorityPolling"
+    },
+    "typescript.tsserver.maxTsServerMemory": 4096,
 
-  // =======================
-  // TypeScript / JavaScript
-  // =======================
-  "typescript.preferences.importModuleSpecifier": "non-relative",
-  "javascript.preferences.importModuleSpecifier": "non-relative",
-  "typescript.preferences.autoImportFileExcludePatterns": [
-    "**/node_modules/lodash/**",
-    "**/node_modules/moment/**"
-  ],
-  "javascript.preferences.autoImportFileExcludePatterns": [
-    "**/node_modules/lodash/**",
-    "**/node_modules/moment/**"
-  ],
+    // =======================
+    // GitLens
+    // =======================
+    "gitlens.currentLine.enabled": false,
+    "gitlens.codeLens.recentChange.enabled": false,
+    "gitlens.hovers.enabled": false,
+    "gitlens.codeLens.enabled": false,
 
-  // =======================
-  // GitLens
-  // =======================
-  "gitlens.currentLine.enabled": false,
-  "gitlens.codeLens.recentChange.enabled": false,
+    // =======================
+    // Diff / Comparação
+    // =======================
+    "diffEditor.renderSideBySide": true,
 
-  // =======================
-  // Diff / Comparação
-  // =======================
-  "diffEditor.renderSideBySide": true,
+    // =======================
+    // Color Identifiers Mode
+    // =======================
+    "colorIdentifiersMode.tokenKinds": [
+        "variable",
+        "function",
+        "parameter",
+        "class",
+        "interface",
+        "type",
+        "enum",
+        "method",
+        "property",
+        "namespace",
+        "module"
+    ],
+    "colorIdentifiersMode.paletteMode": "manual",
+    "colorIdentifiersMode.manualColors": [
+        "#E06C75",
+        "#98C379",
+        "#61AFEF",
+        "#C678DD",
+        "#E5C07B",
+        "#56B6C2",
+        "#FF6B6B",
+        "#4ECDC4",
+        "#45B7D1",
+        "#96CEB4",
+        "#FFEAA7",
+        "#DDA0DD",
+        "#F8BBD9",
+        "#B19CD9"
+    ],
+    "colorIdentifiersMode.ignoredLanguages": [
+        "json",
+        "markdown",
+        "plaintext",
+        "css",
+        "scss",
+        "html"
+    ],
+    "colorIdentifiersMode.method": "hash",
 
-  // =======================
-  // Linguagens específicas
-  // =======================
-  "[prisma]": {
-    "editor.formatOnSave": true
-  }
+    // =======================
+    // React / Next.js
+    // =======================
+    "emmet.includeLanguages": {
+        "typescript": "html",
+        "typescriptreact": "html"
+    },
+    "files.associations": {
+        "*.tsx": "typescriptreact",
+        "*.ts": "typescript"
+    }
 }
