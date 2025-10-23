@@ -23,6 +23,7 @@
 
 - Wildberries
 - Min theme
+- Catppuccin for VSCode
 
 ## Opcionais
 - Code Runner
