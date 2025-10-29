@@ -51,13 +51,6 @@
     // Explorer
     // =======================
     "explorer.compactFolders": false,
-    "explorer.fileNesting.enabled": true,
-    "explorer.fileNesting.patterns": {
-        "package.json": "package*, pnpm-lock*, yarn-lock*, .eslint*, tsconfig*, vite.config*, next.config*",
-        "tailwind.config*": "tailwind.config*, postcss.config*",
-        ".env": ".env*",
-        "docker-compose.yml": "Dockerfile, .dockerignore"
-    },
     "breadcrumbs.enabled": false,
     "symbols.hidesExplorerArrows": false,
     
