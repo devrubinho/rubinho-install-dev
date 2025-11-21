@@ -49,26 +49,20 @@ sudo apt update && sudo apt upgrade -y
 ```
 
 ```
-curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-sudo apt-get install -y nodejs
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+source ~/.bashrc
 ```
 
 ```
+nvm install 22
+nvm alias default 22
 node -v
 npm -v
 ```
 
 ```
-curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-```
-
-```
-sudo apt update
-sudo apt install -y yarn
-```
-
-```
+corepack enable
+corepack prepare yarn@stable --activate
 yarn -v
 ```
 
