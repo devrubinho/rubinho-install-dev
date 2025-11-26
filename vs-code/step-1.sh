@@ -1,38 +1,56 @@
-# bash <(curl -Ls https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/vs-code/step-1.sh)
-
 #!/usr/bin/env bash
 
 set -e
 
-echo "===== [BOOTSTRAP] Instalando ZSH ====="
+echo "=============================================="
+echo "========= [BOOTSTRAP] INSTALLING ZSH ========="
+echo "=============================================="
+
 sudo apt update -y
 sudo apt install -y zsh curl git
 
 ZSH_BIN=$(which zsh)
 
-echo "===== [BOOTSTRAP] Alterando shell padrão ====="
+echo "=============================================="
+echo "===== [BOOTSTRAP] SETTING DEFAULT SHELL ======"
+echo "=============================================="
+
 if [ "$SHELL" != "$ZSH_BIN" ]; then
   chsh -s "$ZSH_BIN"
+  echo "✔ Default shell changed to ZSH"
+else
+  echo "✔ ZSH is already the default shell"
 fi
 
-echo "===== [BOOTSTRAP] Criando .zshrc mínimo ====="
-cat > ~/.zshrc << 'EOF'
-# ==========================
-#  ZSH - configuração mínima
-# ==========================
+echo "=============================================="
+echo "===== [BOOTSTRAP] CREATING MINIMAL .zshrc ===="
+echo "=============================================="
 
+cat > ~/.zshrc << 'EOF'
+# ==========================================
+#  Minimal ZSH bootstrap configuration file
+# ==========================================
+
+# Initialize completion system
 autoload -Uz compinit
 compinit
 
-# --------------------------
-#  Configurações auxiliares
-# --------------------------
+# Additional helper configurations will be appended below
+# --------------------------------------------
 EOF
 
-echo "===== [BOOTSTRAP] Inserindo conteúdo do step-1-aux-1 ====="
+echo "=============================================="
+echo "===== [BOOTSTRAP] ADDING AUXILIARY CONFIG ===="
+echo "=============================================="
+
 curl -Ls https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/vs-code/step-1-aux-1 >> ~/.zshrc
 
-echo "===== [BOOTSTRAP] Concluído ====="
-echo "⚠️ Feche o terminal e abra novamente."
-echo "✔ Depois rode o SCRIPT 2 em ZSH:"
-echo "    bash <(curl -Ls https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/vs-code/step-2.sh)"
+echo "=============================================="
+echo "============== [BOOTSTRAP DONE] =============="
+echo "=============================================="
+echo "⚠️  Please close the terminal and open it again."
+echo "▶ Next, run STEP 2 in a ZSH session:"
+echo ""
+echo "   bash <(curl -Ls https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/vs-code/step-2.sh)"
+echo ""
+
