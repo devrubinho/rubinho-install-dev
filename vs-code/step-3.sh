@@ -135,9 +135,9 @@ echo "----------------------------------------------"
 echo "  [CURSOR] Installing Cursor Editor"
 echo "----------------------------------------------"
 
-curl -L "https://downloads.cursor.com/linux/appImage/x64" -o cursor.AppImage
-chmod +x cursor.AppImage
-sudo mv cursor.AppImage /usr/local/bin/cursor
+wget "https://cursor.sh/download?platform=linux-deb" -O cursor.deb
+sudo dpkg -i cursor.deb || true
+sudo apt --fix-broken install -y
 
 echo "Cursor installed!"
 cursor --version || echo "Cursor version could not be displayed."
