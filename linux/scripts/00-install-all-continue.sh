@@ -6,12 +6,11 @@ echo "=============================================="
 echo "========= CONTINUING INSTALLATION ==========="
 echo "=============================================="
 
-REPO_BASE="https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 scripts=(
-  "02-install-prezto.sh"
-  "03-install-starship.sh"
-  "04-configure-git.sh"
+  "03-install-prezto.sh"
+  "04-install-starship.sh"
   "05-install-docker.sh"
   "06-install-node-nvm.sh"
   "07-install-yarn.sh"
@@ -30,7 +29,7 @@ for script in "${scripts[@]}"; do
   echo "=============================================="
   echo "Running: $script"
   echo "=============================================="
-  bash <(curl -fsSL "$REPO_BASE/$script")
+  bash "$SCRIPT_DIR/$script"
   
   # Special pause after script 05
   if [ "$script" == "05-install-docker.sh" ]; then
@@ -39,7 +38,7 @@ for script in "${scripts[@]}"; do
     echo "⚠️  IMPORTANT: Logout/login now!"
     echo "=============================================="
     echo "Then, continue with:"
-    echo "  bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/00-install-all-continue.sh)"
+    echo "  bash 00-install-all-continue.sh"
     echo ""
     exit 0
   fi

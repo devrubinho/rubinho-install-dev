@@ -15,7 +15,6 @@ zstyle ':prezto:module:prompt' theme 'off'
 # Initialize Starship
 eval "$(starship init zsh)"
 
-
 #
 # ======================
 #  ENVIRONMENT VARIABLES
@@ -25,8 +24,6 @@ eval "$(starship init zsh)"
 # 🔹 Add your custom environment variables here
 # export MY_VARIABLE="value"
 # export ANOTHER="value"
-
-export GITHUB_TOKEN=""
 
 #
 # NVM (Node Version Manager)
@@ -40,8 +37,6 @@ export NVM_DIR="$HOME/.nvm"
 #
 [ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
 
-
-
 #
 # ======================
 #  ALIASES AND SHORTCUTS
@@ -51,108 +46,16 @@ export NVM_DIR="$HOME/.nvm"
 alias dev='cd ~/dev'
 alias reload='source ~/.zshrc && echo "🔁 zshrc reloaded!"'
 
-# Default Python
-alias python=python3
-alias pip=pip3
-
-
-
-#
-# ================================
-#  PYTHON + UV CONFIGURATIONS AND FUNCTIONS
-# ================================
-#
-
-# UV cache and PATH
-export UV_VENV_CLEAR=1
-export UV_CACHE_DIR="$HOME/.cache/uv"
-export PATH="$HOME/.cargo/bin:$PATH"
-
-# Auto-activate .venv when entering directory
-autoload -U add-zsh-hook
-function auto_activate_venv() {
-  if [ -e ".venv/bin/activate" ]; then
-    source .venv/bin/activate
-  fi
-}
-add-zsh-hook chpwd auto_activate_venv
-auto_activate_venv
-
-# Useful shortcuts
-alias mkvenv='uv python install 3.11.13 && uv venv --clear && source .venv/bin/activate'
-alias syncdeps='uv pip sync requirements-dev.txt'
-alias runapp='python3 -m alembic upgrade head && python3 -m app.main'
-
-
 #
 # =============================
 #  SPECIFIC WORKFLOW FUNCTIONS
 # =============================
 #
 
-#
-# LXP — backend, frontend and sso
-#
-function runlxp() {
-  gnome-terminal --tab -- zsh -c "
-    cd ~/dev/dev_ada_async && \
-    docker compose up -d --build mysql localstack redis && \
-    yarn nx run lxp-evaluation-and-certification-backend:serve; \
-    exec zsh
-  "
-
-  gnome-terminal --tab -- zsh -c "
-    cd ~/dev/dev_ada_async && \
-    yarn nx run lxp-frontend:serve; \
-    exec zsh
-  "
-
-  gnome-terminal --tab -- zsh -c "
-    cd ~/dev/dev_sso/sso-localhost && \
-    docker compose up -d --build; \
-    exec zsh
-  "
+function runProject() {
+  cd ~/dev/$1
+  yarn dev
 }
-
-#
-# Interview
-#
-function runinterview() {
-  gnome-terminal --tab -- zsh -c "
-    cd ~/dev/interview && \
-    uv python install 3.11.13 && \
-    uv venv --clear && \
-    source .venv/bin/activate && \
-    uv pip sync requirements-dev.txt && \
-    uv pip install markupsafe && \
-    python3 -m alembic upgrade head && \
-    python3 -m app.main; \
-    exec zsh
-  "
-}
-
-#
-# Assessments Backend
-#
-function runassessmentsbackend() {
-  gnome-terminal --tab -- zsh -c "
-    cd ~/dev/dev_ada_async && \
-    yarn nx run assessments-backend:serve; \
-    exec zsh
-  "
-}
-
-#
-# AI Backend V2
-#
-function runaibackendv2() {
-  gnome-terminal --tab -- zsh -c "
-    cd ~/dev/dev_ada_async && \
-    yarn nx run ai-backend-v2:serve; \
-    exec zsh
-  "
-}
-
 
 #
 # ==========================

@@ -19,5 +19,5 @@ echo "Yarn  -> $(yarn -v)"
 echo "=============================================="
 echo "============== [07] DONE ===================="
 echo "=============================================="
-echo "▶ Next, run: bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/08-install-font-jetbrains.sh)"
+echo "▶ Next, run: bash 08-install-font-jetbrains.sh"
 

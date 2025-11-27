@@ -6,9 +6,9 @@ echo "=============================================="
 echo "========= [12] CONFIGURING SSH =============="
 echo "=============================================="
 
-echo "Installing Git and OpenSSH..."
-sudo apt update
-sudo apt install -y git openssh-client
+echo "Installing OpenSSH and xclip..."
+sudo apt update -y
+sudo apt install -y openssh-client xclip
 
 echo "Generating SSH key..."
 if [ ! -f ~/.ssh/id_ed25519 ]; then
@@ -26,8 +26,7 @@ chmod 700 ~/.ssh
 chmod 600 ~/.ssh/id_ed25519
 chmod 644 ~/.ssh/id_ed25519.pub
 
-echo "Installing xclip and copying public key to clipboard..."
-sudo apt install -y xclip
+echo "Copying public key to clipboard..."
 cat ~/.ssh/id_ed25519.pub | xclip -sel clip
 
 echo "=============================================="
@@ -35,5 +34,5 @@ echo "============== [12] DONE ===================="
 echo "=============================================="
 echo "✅ SSH public key copied to clipboard!"
 echo "   Go to GitHub/GitLab Settings → SSH Keys and paste it."
-echo "▶ Next, run: bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/13-configure-inotify.sh)"
+echo "▶ Next, run: bash 13-configure-inotify.sh"
 

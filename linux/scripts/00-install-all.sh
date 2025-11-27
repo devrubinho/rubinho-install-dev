@@ -10,7 +10,7 @@ echo "This script will run all installation scripts"
 echo "in sequence (01 → 15)."
 echo ""
 echo "⚠️  ATTENTION:"
-echo "   - After script 01, you will need to close"
+echo "   - After script 02, you will need to close"
 echo "     and reopen the terminal."
 echo "   - After script 05, you will need to"
 echo "     logout/login to use Docker without sudo."
@@ -22,18 +22,26 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
   exit 1
 fi
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 echo ""
 echo "=============================================="
-echo "Running script 01: install-zsh.sh"
+echo "Running script 01: configure-git.sh"
 echo "=============================================="
-bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/01-install-zsh.sh)
+bash "$SCRIPT_DIR/01-configure-git.sh"
+
+echo ""
+echo "=============================================="
+echo "Running script 02: install-zsh.sh"
+echo "=============================================="
+bash "$SCRIPT_DIR/02-install-zsh.sh"
 
 echo ""
 echo "=============================================="
 echo "⚠️  IMPORTANT: Close and reopen the terminal now!"
 echo "=============================================="
 echo "Then, continue with:"
-echo "  bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/00-install-all-continue.sh)"
+echo "  bash 00-install-all-continue.sh"
 echo ""
 exit 0
 

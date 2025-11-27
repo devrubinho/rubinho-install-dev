@@ -6,6 +6,11 @@ echo "=============================================="
 echo "========= [08] INSTALLING JETBRAINS FONT ====="
 echo "=============================================="
 
+# Install required packages
+echo "Installing required packages (wget, unzip, fontconfig)..."
+sudo apt update -y
+sudo apt install -y wget unzip fontconfig
+
 FONT_DIR="$HOME/.local/share/fonts/JetBrainsMono"
 mkdir -p "$FONT_DIR"
 
@@ -24,5 +29,5 @@ echo "Font installed successfully."
 echo "=============================================="
 echo "============== [08] DONE ===================="
 echo "=============================================="
-echo "▶ Next, run: bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/09-install-cursor.sh)"
+echo "▶ Next, run: bash 09-install-cursor.sh"
 

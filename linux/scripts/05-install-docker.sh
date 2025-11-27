@@ -42,5 +42,5 @@ echo "=============================================="
 echo "============== [05] DONE ===================="
 echo "=============================================="
 echo "⚠️  Logout/Login required to use Docker without sudo"
-echo "▶ Next, run: bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/06-install-node-nvm.sh)"
+echo "▶ Next, run: bash 06-install-node-nvm.sh"
 

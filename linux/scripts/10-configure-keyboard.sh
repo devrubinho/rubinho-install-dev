@@ -6,8 +6,16 @@ echo "=============================================="
 echo "========= [10] CONFIGURING KEYBOARD ========="
 echo "=============================================="
 
-echo "Setting US International layout..."
-gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'us+intl')]"
+# Check if running in GNOME
+if ! command -v gsettings &> /dev/null; then
+  echo "⚠️  gsettings not found. This script requires GNOME desktop environment."
+  echo "   Skipping keyboard configuration."
+  exit 0
+fi
+
+echo "Setting keyboard layouts (US International + Portuguese BR)..."
+# Set US International as primary and Portuguese BR as secondary
+gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'us+intl'), ('xkb', 'br')]"
 
 echo "Enabling cedilla (ç) fix..."
 gsettings set org.gnome.desktop.input-sources xkb-options "['lv3:ralt_switch']"
@@ -21,5 +29,5 @@ fi
 echo "=============================================="
 echo "============== [10] DONE ===================="
 echo "=============================================="
-echo "▶ Next, run: bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/11-configure-terminal.sh)"
+echo "▶ Next, run: bash 11-configure-terminal.sh"
 

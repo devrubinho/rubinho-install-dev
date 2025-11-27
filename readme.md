@@ -19,41 +19,49 @@ All scripts are organized in numerical order to facilitate sequential installati
 
 ### 🚀 Quick Installation (From Scratch)
 
-If you just formatted your system or are starting from scratch, you have two options:
+If you just formatted your system or are starting from scratch:
+
+**First, clone the repository:**
+```bash
+git clone https://github.com/rubensdeoliveira/rubinho-env.git
+cd rubinho-env/linux/scripts
+```
+
+Then you have two options:
 
 #### Option 1: Automatic Script (Recommended)
 
 ```bash
 # Run the master script (it pauses when necessary)
-bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/00-install-all.sh)
+bash 00-install-all.sh
 
 # After closing/opening the terminal, continue with:
-bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/00-install-all-continue.sh)
+bash 00-install-all-continue.sh
 ```
 
 #### Option 2: Individual Scripts
 
 ```bash
 # Run the scripts in sequence
-bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/01-install-zsh.sh)
-# ⚠️ Close and reopen the terminal after script 01
+bash 01-configure-git.sh
+bash 02-install-zsh.sh
+# ⚠️ Close and reopen the terminal after script 02
 
-bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/02-install-prezto.sh)
-bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/03-install-starship.sh)
-bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/04-configure-git.sh)
-bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/05-install-docker.sh)
+bash 03-install-prezto.sh
+bash 04-install-starship.sh
+bash 05-install-docker.sh
 # ⚠️ Logout/login after script 05 to use Docker without sudo
 
-bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/06-install-node-nvm.sh)
-bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/07-install-yarn.sh)
-bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/08-install-font-jetbrains.sh)
-bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/09-install-cursor.sh)
-bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/10-configure-keyboard.sh)
-bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/11-configure-terminal.sh)
-bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/12-configure-ssh.sh)
-bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/13-configure-inotify.sh)
-bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/14-install-cursor-extensions.sh)
-bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/15-configure-cursor.sh)
+bash 06-install-node-nvm.sh
+bash 07-install-yarn.sh
+bash 08-install-font-jetbrains.sh
+bash 09-install-cursor.sh
+bash 10-configure-keyboard.sh
+bash 11-configure-terminal.sh
+bash 12-configure-ssh.sh
+bash 13-configure-inotify.sh
+bash 14-install-cursor-extensions.sh
+bash 15-configure-cursor.sh
 ```
 
 ---
@@ -62,7 +70,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env
 
 ### **00-install-all.sh** (Master Script)
 Runs all installation scripts in sequence.
-- Pauses after script 01 for you to close/open the terminal
+- Pauses after script 02 for you to close/open the terminal
 - Pauses after script 05 for you to logout/login
 - Use `00-install-all-continue.sh` to continue after the pauses
 
@@ -70,7 +78,17 @@ Runs all installation scripts in sequence.
 
 ## Individual Scripts
 
-### **01-install-zsh.sh**
+### **01-configure-git.sh**
+Configures Git with identity and preferences.
+- Configures name and email
+- Sets default branch to `main`
+- Enables colors in Git
+
+**Note:** Git must already be installed (required to clone the repository).
+
+---
+
+### **02-install-zsh.sh**
 Installs and configures Zsh as the default shell.
 - Installs Zsh, Curl and Git
 - Sets Zsh as the default shell
@@ -81,7 +99,7 @@ Installs and configures Zsh as the default shell.
 
 ---
 
-### **02-install-prezto.sh**
+### **03-install-prezto.sh**
 Installs Prezto (framework for Zsh).
 - Clones the Prezto repository
 - Creates symlinks for configuration files
@@ -89,22 +107,13 @@ Installs Prezto (framework for Zsh).
 
 ---
 
-### **03-install-starship.sh**
+### **04-install-starship.sh**
 Installs and configures the Starship prompt.
 - Installs Starship
-- Downloads and configures `starship.toml`
+- Copies and configures `starship.toml`
 - Updates `.zshrc` with Prezto + Starship
 
 **👉 After running:** Run `source ~/.zshrc`
-
----
-
-### **04-configure-git.sh**
-Configures Git with identity and preferences.
-- Installs Git (if needed)
-- Configures name and email
-- Sets default branch to `main`
-- Enables colors in Git
 
 ---
 
@@ -240,9 +249,10 @@ To modify scripts, update tools or version environment adjustments, just edit th
 
 ## 📝 Important Notes
 
+- **Prerequisites:** Git must be installed to clone the repository
 - **Execution order:** Scripts must be run in numerical order (01 → 15)
 - **Required restarts:**
-  - After script 01: Close and reopen the terminal
+  - After script 02: Close and reopen the terminal
   - After script 05: Logout/login to use Docker without sudo
 - **Dependencies:** Some scripts depend on others (e.g., Yarn needs Node installed)
 - **Custom configurations:** Edit files in `linux/config/` before running the scripts

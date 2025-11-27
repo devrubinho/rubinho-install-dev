@@ -3,7 +3,7 @@
 set -e
 
 echo "=============================================="
-echo "========= [01] INSTALLING ZSH ================"
+echo "========= [02] INSTALLING ZSH ================"
 echo "=============================================="
 
 sudo apt update -y
@@ -12,7 +12,7 @@ sudo apt install -y zsh curl git
 ZSH_BIN=$(which zsh)
 
 echo "=============================================="
-echo "===== [01] SETTING DEFAULT SHELL ============"
+echo "===== [02] SETTING DEFAULT SHELL ============"
 echo "=============================================="
 
 if [ "$SHELL" != "$ZSH_BIN" ]; then
@@ -23,7 +23,7 @@ else
 fi
 
 echo "=============================================="
-echo "===== [01] CREATING MINIMAL .zshrc ==========="
+echo "===== [02] CREATING MINIMAL .zshrc ==========="
 echo "=============================================="
 
 cat > ~/.zshrc << 'EOF'
@@ -40,13 +40,13 @@ compinit
 EOF
 
 echo "=============================================="
-echo "===== [01] MINIMAL CONFIG CREATED ============"
+echo "===== [02] MINIMAL CONFIG CREATED ============"
 echo "=============================================="
-echo "Full ZSH configuration will be added by script 03"
+echo "Full ZSH configuration will be added by script 04"
 
 echo "=============================================="
-echo "============== [01] DONE ===================="
+echo "============== [02] DONE ===================="
 echo "=============================================="
 echo "⚠️  Please close the terminal and open it again."
-echo "▶ Next, run: bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/02-install-prezto.sh)"
+echo "▶ Next, run: bash 03-install-prezto.sh"
 

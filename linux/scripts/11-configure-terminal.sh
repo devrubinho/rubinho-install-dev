@@ -6,9 +6,35 @@ echo "=============================================="
 echo "========= [11] CONFIGURING TERMINAL ========="
 echo "=============================================="
 
-echo "Installing dconf-cli..."
-sudo apt-get install -y dconf-cli
+# Check if running in GNOME
+if ! command -v gsettings &> /dev/null; then
+  echo "⚠️  gsettings not found. This script requires GNOME desktop environment."
+  echo "   Skipping terminal configuration."
+  exit 0
+fi
 
+echo "Installing required packages (dconf-cli, uuid-runtime)..."
+sudo apt-get update -y
+sudo apt-get install -y dconf-cli uuid-runtime
+
+echo "Checking if Dracula theme is installed..."
+# Check if Dracula colors are already applied (check for Dracula background color)
+DRACULA_INSTALLED=false
+if dconf read /org/gnome/terminal/legacy/profiles:/:*/background-color 2>/dev/null | grep -q "#282a36"; then
+  DRACULA_INSTALLED=true
+  echo "✓ Dracula colors found in existing profiles"
+else
+  # Check if dracula theme directory exists
+  if [ -d "$HOME/.local/share/gnome-terminal/colors/dracula" ] || [ -d "/usr/share/gnome-terminal/colors/dracula" ]; then
+    DRACULA_INSTALLED=true
+    echo "✓ Dracula theme files found"
+  else
+    echo "⚠️  Dracula theme not found"
+    echo "   Will apply Dracula colors manually to the new profile"
+  fi
+fi
+
+echo ""
 echo "Creating new GNOME Terminal profile: rubinho..."
 NEW_PROFILE_ID=$(uuidgen)
 
@@ -47,5 +73,5 @@ echo "Profile successfully applied."
 echo "=============================================="
 echo "============== [11] DONE ===================="
 echo "=============================================="
-echo "▶ Next, run: bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/12-configure-ssh.sh)"
+echo "▶ Next, run: bash 12-configure-ssh.sh"
 

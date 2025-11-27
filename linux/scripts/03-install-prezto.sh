@@ -3,7 +3,7 @@
 set -e
 
 echo "=============================================="
-echo "========= [02] INSTALLING PREZTO ============="
+echo "========= [03] INSTALLING PREZTO ============="
 echo "=============================================="
 
 ZSH_BIN=$(which zsh)
@@ -45,7 +45,7 @@ zstyle ':prezto:load' pmodule \
 EOF
 
 echo "=============================================="
-echo "============== [02] DONE ===================="
+echo "============== [03] DONE ===================="
 echo "=============================================="
-echo "▶ Next, run: bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/03-install-starship.sh)"
+echo "▶ Next, run: bash 04-install-starship.sh"
 

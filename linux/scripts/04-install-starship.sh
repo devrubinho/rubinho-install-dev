@@ -3,20 +3,25 @@
 set -e
 
 echo "=============================================="
-echo "========= [03] INSTALLING STARSHIP ==========="
+echo "========= [04] INSTALLING STARSHIP ==========="
 echo "=============================================="
 
 echo "Installing Starship prompt..."
 curl -sS https://starship.rs/install.sh | sh
 
-echo "Downloading starship.toml..."
+echo "Copying starship.toml..."
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 mkdir -p ~/.config
-curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/config/starship.toml -o ~/.config/starship.toml
+cp "$SCRIPT_DIR/../config/starship.toml" ~/.config/starship.toml
 
 echo "Updating .zshrc with Prezto + Starship + custom config..."
-# Download the complete zsh-config which already includes Prezto and Starship
-if ! curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/config/zsh-config -o ~/.zshrc; then
-  # Fallback if download fails
+# Copy the complete zsh-config which already includes Prezto and Starship
+if [ -f "$SCRIPT_DIR/../config/zsh-config" ]; then
+  cp "$SCRIPT_DIR/../config/zsh-config" ~/.zshrc
+  echo "✓ zsh-config copied successfully"
+else
+  echo "⚠ zsh-config not found, using fallback configuration"
+  # Fallback if file doesn't exist
   cat > ~/.zshrc << 'EOF'
 #
 # Final ZSH configuration (Prezto + Starship)
@@ -36,8 +41,8 @@ EOF
 fi
 
 echo "=============================================="
-echo "============== [03] DONE ===================="
+echo "============== [04] DONE ===================="
 echo "=============================================="
 echo "👉 Run: source ~/.zshrc"
-echo "▶ Next, run: bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/04-configure-git.sh)"
+echo "▶ Next, run: bash 05-install-docker.sh"
 

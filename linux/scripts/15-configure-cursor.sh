@@ -18,18 +18,19 @@ fi
 
 mkdir -p "$CURSOR_USER_DIR"
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SETTINGS_PATH="$CURSOR_USER_DIR/settings.json"
 KEYBINDINGS_PATH="$CURSOR_USER_DIR/keybindings.json"
 
 echo "Detected Cursor directory: $CURSOR_USER_DIR"
 echo ""
 
-echo "Downloading settings.json..."
-curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/config/user-settings.json -o "$SETTINGS_PATH"
+echo "Copying settings.json..."
+cp "$SCRIPT_DIR/../config/user-settings.json" "$SETTINGS_PATH"
 echo "→ settings.json updated successfully!"
 
-echo "Downloading keybindings.json..."
-curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/config/cursor-keyboard.json -o "$KEYBINDINGS_PATH"
+echo "Copying keybindings.json..."
+cp "$SCRIPT_DIR/../config/cursor-keyboard.json" "$KEYBINDINGS_PATH"
 echo "→ keybindings.json updated successfully!"
 
 echo "=============================================="
