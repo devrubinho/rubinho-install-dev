@@ -1,57 +1,58 @@
 # 🌐 Rubinho Env
 
+> Complete development environment configurations for **Linux** and **macOS**
+
 This repository contains **all my development environment configurations**, including:
 
-- configuration files (dotfiles)
-- Cursor/VS Code presets
-- themes and fonts
-- automated scripts
-- auxiliary tools
-- utilities for environment setup, backup and restoration
-
-The goal is to facilitate the installation and standardization of my environment on any Linux machine.
+- 📝 Configuration files (dotfiles)
+- 🎨 Themes and fonts
+- ⚙️ Automated installation scripts
+- 🔧 Cursor/VS Code configurations
+- 🛠️ Auxiliary tools
 
 ---
 
-## 📦 Installation Scripts
+## 🚀 Quick Start
 
-All scripts are organized in numerical order to facilitate sequential installation. **Run the scripts in the correct order (01 → 02 → 03 → ... → 15).**
+### 1. Clone the repository
 
-### 🚀 Quick Installation (From Scratch)
-
-If you just formatted your system or are starting from scratch:
-
-**First, clone the repository:**
 ```bash
 git clone https://github.com/rubensdeoliveira/rubinho-env.git
-cd rubinho-env/linux/scripts
+cd rubinho-env
 ```
 
-Then you have two options:
+### 2. Choose your platform
 
-#### Option 1: Automatic Script (Recommended)
+- [🐧 Linux](#-linux-installation)
+- [🍎 macOS](#-macos-installation)
+
+---
+
+## 🐧 Linux Installation
+
+### Automatic Installation (Recommended)
 
 ```bash
-# Run the master script (it pauses when necessary)
+cd linux/scripts
+
+# Run all scripts automatically
 bash 00-install-all.sh
 
-# After closing/opening the terminal, continue with:
+# After closing and reopening the terminal, continue:
 bash 00-install-all-continue.sh
 ```
 
-#### Option 2: Individual Scripts
+### Manual Installation
 
 ```bash
-# Run the scripts in sequence
-bash 01-configure-git.sh
-bash 02-install-zsh.sh
-# ⚠️ Close and reopen the terminal after script 02
+cd linux/scripts
 
+# Run in order:
+bash 01-configure-git.sh
+bash 02-install-zsh.sh          # ⚠️ Close terminal after this
 bash 03-install-prezto.sh
 bash 04-install-starship.sh
-bash 05-install-docker.sh
-# ⚠️ Logout/login after script 05 to use Docker without sudo
-
+bash 05-install-docker.sh       # ⚠️ Logout/login after this
 bash 06-install-node-nvm.sh
 bash 07-install-yarn.sh
 bash 08-install-font-jetbrains.sh
@@ -62,6 +63,43 @@ bash 12-configure-ssh.sh
 bash 13-configure-inotify.sh
 bash 14-install-cursor-extensions.sh
 bash 15-configure-cursor.sh
+```
+
+---
+
+## 🍎 macOS Installation
+
+### Automatic Installation (Recommended)
+
+```bash
+cd macos/scripts
+
+# Run all scripts automatically
+bash 00-install-all.sh
+
+# After closing and reopening the terminal, continue:
+bash 00-install-all-continue.sh
+```
+
+### Manual Installation
+
+```bash
+cd macos/scripts
+
+# Run in order:
+bash 01-configure-git.sh
+bash 02-install-zsh.sh          # ⚠️ Close terminal after this
+bash 03-install-prezto.sh
+bash 04-install-starship.sh
+bash 05-install-docker.sh
+bash 06-install-node-nvm.sh
+bash 07-install-yarn.sh
+bash 08-install-font-jetbrains.sh
+bash 09-configure-terminal.sh
+bash 10-configure-ssh.sh
+bash 11-configure-file-watchers.sh
+bash 12-install-cursor-extensions.sh
+bash 13-configure-cursor.sh
 ```
 
 ---
@@ -151,23 +189,30 @@ Installs JetBrains Mono Nerd Font.
 
 ---
 
-### **09-install-cursor.sh**
-Installs Cursor Editor.
+### **09-install-cursor.sh** (Linux only)
+Installs Cursor Editor on Linux.
 - Downloads Cursor .deb package
 - Installs via dpkg
 - Verifies installation
 
+### **09-configure-terminal.sh** (macOS only)
+Configures iTerm2 with Dracula theme.
+- Clones Dracula theme repository
+- Provides instructions for manual configuration
+- Sets font to JetBrainsMono Nerd Font 16pt
+- Applies Dracula color preset
+
 ---
 
-### **10-configure-keyboard.sh**
-Configures keyboard for US International.
+### **10-configure-keyboard.sh** (Linux only)
+Configures keyboard for US International on Linux.
 - Sets US International layout
 - Enables cedilla (ç) support
 - Configures keyboard options
 
 ---
 
-### **11-configure-terminal.sh**
+### **11-configure-terminal.sh** (Linux only)
 Configures GNOME Terminal with Dracula theme.
 - Installs dconf-cli
 - Creates "rubinho" profile in GNOME Terminal
@@ -189,7 +234,12 @@ Configures SSH for Git.
 
 ---
 
-### **13-configure-inotify.sh**
+### **11-configure-file-watchers.sh** (macOS only)
+Configures file watcher limits for macOS.
+- Adjusts system limits for file watching
+- Applies changes
+
+### **13-configure-inotify.sh** (Linux only)
 Configures inotify limits for file watching.
 - Increases `max_user_watches` to 524288
 - Makes the configuration persistent
@@ -235,7 +285,9 @@ rubinho-env/
 │   │   ├── cursor-keyboard.json  # Cursor keyboard shortcuts
 │   │   └── zsh-config      # Additional Zsh configurations
 │   └── scripts/             # Installation scripts (01-15)
-├── mac/                     # macOS configurations (future)
+├── macos/
+│   ├── config/              # Same configurations as Linux
+│   └── scripts/             # Scripts adapted for macOS
 └── readme.md               # This file
 ```
 
@@ -249,10 +301,18 @@ To modify scripts, update tools or version environment adjustments, just edit th
 
 ## 📝 Important Notes
 
-- **Prerequisites:** Git must be installed to clone the repository
-- **Execution order:** Scripts must be run in numerical order (01 → 15)
-- **Required restarts:**
-  - After script 02: Close and reopen the terminal
-  - After script 05: Logout/login to use Docker without sudo
-- **Dependencies:** Some scripts depend on others (e.g., Yarn needs Node installed)
-- **Custom configurations:** Edit files in `linux/config/` before running the scripts
+### Prerequisites
+- **Git** must be installed to clone the repository
+- **macOS:** Homebrew will be installed automatically if it doesn't exist
+
+### Required Restarts
+1. **After script 02:** Close and reopen the terminal
+2. **After script 05 (Linux):** Logout/login to use Docker without sudo
+3. **After script 05 (macOS):** Make sure Docker Desktop is running
+
+### Dependencies
+- Scripts must be run in numerical order (01 → 02 → 03 → ...)
+- Some scripts depend on others (e.g., Yarn needs Node installed)
+
+### Custom Configurations
+- Edit files in `linux/config/` or `macos/config/` before running the scripts

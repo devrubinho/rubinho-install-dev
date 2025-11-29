@@ -1,0 +1,64 @@
+#
+# ==========================
+#  ZSH MAIN CONFIGURATION
+# ==========================
+#
+
+# Load Prezto (shell framework)
+if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
+  source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
+fi
+
+# Disable Prezto default prompt to use Starship
+zstyle ':prezto:module:prompt' theme 'off'
+
+# Initialize Starship
+eval "$(starship init zsh)"
+
+#
+# ======================
+#  ENVIRONMENT VARIABLES
+# ======================
+#
+
+# 🔹 Add your custom environment variables here
+# export MY_VARIABLE="value"
+# export ANOTHER="value"
+
+#
+# NVM (Node Version Manager)
+#
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+
+#
+# Other variables and tools
+#
+[ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
+
+#
+# ======================
+#  ALIASES AND SHORTCUTS
+# ======================
+#
+
+alias dev='cd ~/dev'
+alias reload='source ~/.zshrc && echo "🔁 zshrc reloaded!"'
+
+#
+# =============================
+#  SPECIFIC WORKFLOW FUNCTIONS
+# =============================
+#
+
+function runProject() {
+  cd ~/dev/$1
+  yarn dev
+}
+
+#
+# ==========================
+#  END OF FILE
+# ==========================
+#
