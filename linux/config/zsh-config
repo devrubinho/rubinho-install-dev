@@ -84,6 +84,186 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 ### -------------------------------
+### PROJECT STARTER FUNCTIONS
+### -------------------------------
+# Generic function to start a project with backend and frontend
+# Helper function to check if backend is already running
+_is-backend-running() {
+  local backend_dir="$1"
+  
+  # Check if postgres container is running
+  if docker ps --format '{{.Names}}' 2>/dev/null | grep -q "postgres"; then
+    # Check if there's a node/yarn process running in the backend directory
+    if pgrep -f "yarn start:dev" > /dev/null 2>&1 || \
+       pgrep -f "node.*$backend_dir" > /dev/null 2>&1; then
+      return 0  # Backend is running
+    fi
+  fi
+  
+  return 1  # Backend is not running
+}
+
+_start-project() {
+  local project_name=$1
+  local backend_dir="$HOME/dev/ricardo/flow-roll-backend-service"
+  local frontend_dir=""
+  local backend_running=false
+  
+  # Map project names to actual directory names
+  case $project_name in
+    academy)
+      frontend_dir="$HOME/dev/ricardo/flow-roll-academy-web"
+      ;;
+    community)
+      frontend_dir="$HOME/dev/ricardo/flow-roll-community-web"
+      ;;
+    comp)
+      frontend_dir="$HOME/dev/ricardo/flow-roll-comp-web"
+      ;;
+    events)
+      frontend_dir="$HOME/dev/ricardo/flow-roll-events-web"
+      ;;
+    *)
+      echo "❌ Unknown project: $project_name"
+      echo "   Available: academy, community, comp, events"
+      return 1
+      ;;
+  esac
+  
+  # Verify backend directory exists
+  if [[ ! -d "$backend_dir" ]]; then
+    echo "❌ Backend not found: $backend_dir"
+    return 1
+  fi
+  
+  # Verify frontend directory exists
+  if [[ ! -d "$frontend_dir" ]]; then
+    echo "❌ Frontend not found: $frontend_dir"
+    return 1
+  fi
+  
+  # Check if backend is already running
+  if _is-backend-running "$backend_dir"; then
+    backend_running=true
+    echo "✓ Backend is already running, opening frontend only..."
+  fi
+  
+  # Detect terminal and OS
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS: Try iTerm2 first, fallback to Terminal.app
+    if [[ -d "/Applications/iTerm.app" ]]; then
+      if [[ "$backend_running" == true ]]; then
+        echo "🚀 Starting $project_name frontend with iTerm2..."
+      else
+        echo "🚀 Starting $project_name with iTerm2..."
+      fi
+      
+      # Tab 1: Backend (only if not running)
+      if [[ "$backend_running" == false ]]; then
+        osascript <<EOF 2>/dev/null
+tell application "iTerm"
+  activate
+  tell current window
+    create tab with default profile
+    tell current session of current tab
+      write text "cd '$backend_dir' && docker compose up -d postgres && yarn start:dev"
+      set name to "backend"
+    end tell
+  end tell
+end tell
+EOF
+        sleep 0.5
+      fi
+      
+      # Tab 2: Frontend
+      osascript <<EOF 2>/dev/null
+tell application "iTerm"
+  tell current window
+    create tab with default profile
+    tell current session of current tab
+      write text "cd '$frontend_dir' && yarn dev"
+      set name to "$project_name-frontend"
+    end tell
+  end tell
+end tell
+EOF
+      
+      if [[ "$backend_running" == true ]]; then
+        echo "✓ Frontend started in iTerm2"
+      else
+        echo "✓ Backend and Frontend started in iTerm2 tabs"
+      fi
+    else
+      # Fallback to Terminal.app
+      if [[ "$backend_running" == true ]]; then
+        echo "🚀 Starting $project_name frontend with Terminal.app..."
+      else
+        echo "🚀 Starting $project_name with Terminal.app..."
+      fi
+      
+      if [[ "$backend_running" == false ]]; then
+        osascript <<EOF 2>/dev/null
+tell application "Terminal"
+  activate
+  do script "cd '$backend_dir' && docker compose up -d postgres && yarn start:dev"
+end tell
+EOF
+        sleep 0.5
+      fi
+      
+      osascript <<EOF 2>/dev/null
+tell application "Terminal"
+  activate
+  tell application "System Events" to keystroke "t" using {command down}
+  delay 0.5
+  do script "cd '$frontend_dir' && yarn dev" in front window
+end tell
+EOF
+      
+      if [[ "$backend_running" == true ]]; then
+        echo "✓ Frontend started in Terminal.app"
+      else
+        echo "✓ Backend and Frontend started in Terminal.app tabs"
+      fi
+    fi
+  else
+    # Linux: Use gnome-terminal or similar
+    if command -v gnome-terminal &> /dev/null; then
+      if [[ "$backend_running" == true ]]; then
+        echo "🚀 Starting $project_name frontend with gnome-terminal..."
+        gnome-terminal --tab --title="$project_name-frontend" -- zsh -c "cd '$frontend_dir' && yarn dev; exec zsh"
+        echo "✓ Frontend started in gnome-terminal"
+      else
+        echo "🚀 Starting $project_name with gnome-terminal..."
+        gnome-terminal --tab --title="backend" -- zsh -c "cd '$backend_dir' && docker compose up -d postgres && yarn start:dev; exec zsh" \
+          --tab --title="$project_name-frontend" -- zsh -c "cd '$frontend_dir' && yarn dev; exec zsh"
+        echo "✓ Backend and Frontend started in gnome-terminal tabs"
+      fi
+    elif command -v xterm &> /dev/null; then
+      if [[ "$backend_running" == true ]]; then
+        echo "🚀 Starting $project_name frontend with xterm..."
+        xterm -T "$project_name-frontend" -e zsh -c "cd '$frontend_dir' && yarn dev; exec zsh" &
+        echo "✓ Frontend started in xterm"
+      else
+        echo "🚀 Starting $project_name with xterm..."
+        xterm -T "backend" -e zsh -c "cd '$backend_dir' && docker compose up -d postgres && yarn start:dev; exec zsh" &
+        xterm -T "$project_name-frontend" -e zsh -c "cd '$frontend_dir' && yarn dev; exec zsh" &
+        echo "✓ Backend and Frontend started in separate xterm windows"
+      fi
+    else
+      echo "❌ No terminal application found. Please install gnome-terminal"
+      return 1
+    fi
+  fi
+}
+
+# Project-specific functions
+xacademy() { _start-project "academy" }
+xcommunity() { _start-project "community" }
+xcomp() { _start-project "comp" }
+xevents() { _start-project "events" }
+
+### -------------------------------
 ### STARSHIP (prompt)
 ### -------------------------------
 eval "$(starship init zsh)"
