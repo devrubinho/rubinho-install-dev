@@ -8,6 +8,40 @@ echo "=============================================="
 echo ""
 echo "This script will install and configure your development environment."
 echo ""
+
+# Collect user information
+echo "📝 Please provide the following information:"
+echo ""
+
+# Get Git user name
+if [ -z "$GIT_USER_NAME" ]; then
+    read -p "Enter your Git user name (e.g., John Doe): " GIT_USER_NAME
+    if [ -z "$GIT_USER_NAME" ]; then
+        echo "⚠️  Git user name is required. Using default: 'Developer'"
+        GIT_USER_NAME="Developer"
+    fi
+fi
+
+# Get Git email
+if [ -z "$GIT_USER_EMAIL" ]; then
+    read -p "Enter your Git email (e.g., john.doe@example.com): " GIT_USER_EMAIL
+    if [ -z "$GIT_USER_EMAIL" ]; then
+        echo "⚠️  Git email is required. Exiting..."
+        exit 1
+    fi
+fi
+
+# Export variables for child scripts
+export GIT_USER_NAME
+export GIT_USER_EMAIL
+
+echo ""
+echo "=============================================="
+echo "Configuration summary:"
+echo "  Git Name: $GIT_USER_NAME"
+echo "  Git Email: $GIT_USER_EMAIL"
+echo "=============================================="
+echo ""
 echo "⚠️  ATTENTION:"
 echo "   - After Docker installation, you may need to"
 echo "     restart Docker Desktop (macOS)."
@@ -102,6 +136,8 @@ scripts=(
   "13-configure-cursor.sh"
   "14-install-docker.sh"
   "15-configure-terminal.sh"
+  "16-install-insomnia.sh"
+  "17-install-tableplus.sh"
 )
 
 for script in "${scripts[@]}"; do

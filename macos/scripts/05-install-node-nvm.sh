@@ -38,7 +38,7 @@ if [ -s "$NVM_DIR/nvm.sh" ]; then
   if command -v node &> /dev/null; then
     echo "✓ Node  -> $(node -v)"
     echo "✓ NPM   -> $(npm -v)"
-  else
+else
     echo "⚠️  Node installed but not in PATH. Please restart terminal."
   fi
 else

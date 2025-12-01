@@ -8,6 +8,40 @@ echo "=============================================="
 echo ""
 echo "This script will install and configure your development environment."
 echo ""
+
+# Collect user information
+echo "📝 Please provide the following information:"
+echo ""
+
+# Get Git user name
+if [ -z "$GIT_USER_NAME" ]; then
+    read -p "Enter your Git user name (e.g., John Doe): " GIT_USER_NAME
+    if [ -z "$GIT_USER_NAME" ]; then
+        echo "⚠️  Git user name is required. Using default: 'Developer'"
+        GIT_USER_NAME="Developer"
+    fi
+fi
+
+# Get Git email
+if [ -z "$GIT_USER_EMAIL" ]; then
+    read -p "Enter your Git email (e.g., john.doe@example.com): " GIT_USER_EMAIL
+    if [ -z "$GIT_USER_EMAIL" ]; then
+        echo "⚠️  Git email is required. Exiting..."
+        exit 1
+    fi
+fi
+
+# Export variables for child scripts
+export GIT_USER_NAME
+export GIT_USER_EMAIL
+
+echo ""
+echo "=============================================="
+echo "Configuration summary:"
+echo "  Git Name: $GIT_USER_NAME"
+echo "  Git Email: $GIT_USER_EMAIL"
+echo "=============================================="
+echo ""
 echo "⚠️  ATTENTION:"
 echo "   - After Docker installation (final step), you may need to"
 echo "     logout/login to use Docker without sudo (Linux only)."
@@ -100,10 +134,12 @@ scripts=(
   "10-configure-keyboard.sh"
   "11-configure-terminal.sh"
   "12-configure-ssh.sh"
-  "14-configure-inotify.sh"
-  "15-install-cursor-extensions.sh"
-  "16-configure-cursor.sh"
-  "17-install-docker.sh"
+  "13-configure-inotify.sh"
+  "14-install-cursor-extensions.sh"
+  "15-configure-cursor.sh"
+  "16-install-docker.sh"
+  "17-install-insomnia.sh"
+  "18-install-heidisql.sh"
 )
 
 for script in "${scripts[@]}"; do
