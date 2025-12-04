@@ -17,8 +17,8 @@ This repository contains **all my development environment configurations**, incl
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/rubensdeoliveira/rubinho-env.git
-cd rubinho-env
+git clone https://github.com/rubensdeoliveira/rubinho-scripts.git
+cd rubinho-scripts
 ```
 
 ### 2. Choose your platform
@@ -659,7 +659,7 @@ Installs TablePlus for macOS (alternative to HeidiSQL).
 ## 📁 Repository Structure
 
 ```
-rubinho-env/
+rubinho-scripts/
 ├── linux/
 │   ├── config/              # Configuration files
 │   │   ├── starship.toml   # Starship prompt configuration
