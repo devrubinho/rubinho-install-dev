@@ -25,7 +25,7 @@ cd rubinho-scripts
 
 - [🐧 Linux](#-linux-installation)
 - [🍎 macOS](#-macos-installation)
-- [🧹 macOS Disk Space Manager](#-macos-disk-space-manager)
+- [🧹 Disk Space Manager](#-disk-space-manager)
 
 ---
 
@@ -109,14 +109,13 @@ bash 17-install-tableplus.sh
 
 ---
 
-## 🧹 macOS Disk Space Manager
+## 🧹 Disk Space Manager
 
-Professional disk space analysis and cleanup scripts for macOS. Analyze what's taking up space and safely clean development caches, temporary files, and more.
+Professional disk space analysis and cleanup scripts for **Linux** and **macOS**. Analyze what's taking up space and safely clean development caches, temporary files, and more.
 
+![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
 ![macOS](https://img.shields.io/badge/macOS-000000?style=for-the-badge&logo=apple&logoColor=white)
-
 ![Bash](https://img.shields.io/badge/Bash-4EAA25?style=for-the-badge&logo=gnu-bash&logoColor=white)
-
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)
 
 ### 🌟 Features
@@ -131,15 +130,13 @@ Professional disk space analysis and cleanup scripts for macOS. Analyze what's t
 
   - Home directory size
 
-  - Downloads folder
-
   - Caches
 
   - Trash
 
   - Logs
 
-  - Xcode data (if installed)
+  - Xcode data (macOS only, if installed)
 
   - Number of `node_modules` folders
 
@@ -167,7 +164,7 @@ Aggressive but safe cleanup of:
 
 - NX, Yarn, and npm caches
 
-##### 🍎 Xcode
+##### 🍎 Xcode (macOS only)
 
 - DerivedData
 
@@ -181,40 +178,49 @@ Aggressive but safe cleanup of:
 
 - All user trash bins
 
-- External volume trash
+- External volume trash (macOS only)
 
-- Application caches (Safari, Chrome, VS Code, Spotify, Slack, etc.)
+- Application caches:
+  - **macOS**: Safari, Chrome, VS Code, Spotify, Slack, etc.
+  - **Linux**: Chrome, Firefox, VS Code, Spotify, Slack, etc.
 
 - System logs (>30 days)
 
 - Temporary files
 
-- Old downloads (>90 days)
-
 ##### 🛠️ Development Tools
 
-- Homebrew cache
-
-- npm cache
-
-- pip cache
-
-- NSServices cache
+- **macOS**: Homebrew cache, npm cache, pip cache, NSServices cache
+- **Linux**: Package manager caches (apt, yum, dnf, pacman), npm cache, pip cache
 
 ### 📋 Requirements
 
-- **macOS** (any recent version)
-
-- **Bash** (pre-installed on macOS)
-
+- **Linux** or **macOS** (any recent version)
+- **Bash** (pre-installed on both systems)
 - **sudo access** (for system-wide operations)
 
 ### 🚀 Installation
+
+#### macOS
 
 1. Navigate to the utils directory:
 
 ```bash
 cd macos/scripts/utils
+```
+
+2. Make scripts executable:
+
+```bash
+chmod +x analyze_space.sh clean_space.sh
+```
+
+#### Linux
+
+1. Navigate to the utils directory:
+
+```bash
+cd linux/scripts/utils
 ```
 
 2. Make scripts executable:
@@ -276,7 +282,6 @@ sudo ./clean_space.sh
 👤 username
 ─────────────────────────────────────────────────────────────────
   📁 Home total:          45G
-  📥 Downloads:           2.3G
   💾 Caches:              1.8G
   🗑️  Trash:              512M
   📦 node_modules:        15 folder(s)
@@ -287,7 +292,7 @@ sudo ./clean_space.sh
 
 ```
 ╔════════════════════════════════════════════════════════════════╗
-║            🧹  DISK SPACE CLEANUP - macOS  🧹                 ║
+║            🧹  DISK SPACE CLEANUP  🧹                         ║
 ╚════════════════════════════════════════════════════════════════╝
 
 ╔════════════════════════════════════════════════════════════════╗
@@ -318,7 +323,7 @@ sudo ./clean_space.sh
 
 - ✅ **Per-user separation** - clearly shows what's being cleaned for each user
 
-- ✅ **macOS verification** - scripts refuse to run on non-macOS systems
+- ✅ **OS verification** - scripts refuse to run on incorrect systems (macOS scripts only run on macOS, Linux scripts only run on Linux)
 
 - ✅ **Detailed logging** of freed space
 
@@ -360,8 +365,6 @@ sudo ./clean_space.sh
 
 - System files
 
-- Recent downloads (<90 days)
-
 ### 🔍 Directories Searched
 
 The scripts automatically search common development directories:
@@ -394,7 +397,9 @@ The scripts automatically search common development directories:
 
 ### 🐛 Known Issues
 
-- Some protected system directories may show "Permission denied" even with sudo (this is normal due to System Integrity Protection)
+- Some protected system directories may show "Permission denied" even with sudo
+  - **macOS**: This is normal due to System Integrity Protection (SIP)
+  - **Linux**: Some system directories may be protected by SELinux or AppArmor
 
 - Docker cleanup requires Docker to be running
 
@@ -669,6 +674,8 @@ rubinho-scripts/
 │   └── scripts/             # Scripts directory
 │       ├── enviroment/      # Environment setup scripts (01-18)
 │       └── utils/           # Utility scripts
+│           ├── analyze_space.sh # Disk space analysis tool
+│           └── clean_space.sh   # Disk space cleanup tool
 ├── macos/
 │   ├── config/              # Same configurations as Linux
 │   └── scripts/             # Scripts directory
