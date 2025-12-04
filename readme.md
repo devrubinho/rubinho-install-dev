@@ -1,4 +1,4 @@
-# 🌐 Rubinho Env
+# 🌐 Rubinho Scripts
 
 > Complete development environment configurations for **Linux** and **macOS**
 
