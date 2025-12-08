@@ -1,201 +1,209 @@
 #!/usr/bin/env bash
 
-set -e
+#
+# Rubinho Scripts - Main Entry Point
+#
+# Simplified interface for managing development environment and system resources.
+# Automatically detects platform and provides three core options:
+#   1. Install development tools
+#   2. Analyze disk space
+#   3. Clean up unnecessary files
+#
+
+set -eo pipefail
+
+# ────────────────────────────────────────────────────────────────
+# Script Directory and Initialization
+# ────────────────────────────────────────────────────────────────
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-echo "╔════════════════════════════════════════════════════════════════╗"
-echo "║         🚀 Rubinho Scripts - Interactive Launcher 🚀         ║"
-echo "╚════════════════════════════════════════════════════════════════╝"
-echo ""
-
-# ────────────────────────────────
-# Choose Environment
-# ────────────────────────────────
-
-echo "Select environment:"
-echo "  1) 👤 Personal - Base development setup"
-echo "  2) 🏢 Work - Company-specific tools"
-echo ""
-read -p "Choice [1-2]: " ENV_CHOICE
-
-case $ENV_CHOICE in
-    1)
-        ENV_TYPE="personal"
-        ENV_NAME="Personal"
-        ENV_ICON="👤"
-        ;;
-    2)
-        ENV_TYPE="work"
-        ENV_NAME="Work"
-        ENV_ICON="🏢"
-        ;;
-    *)
-        echo "❌ Invalid choice"
-        exit 1
-        ;;
-esac
-
-echo ""
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "$ENV_ICON $ENV_NAME Environment Selected"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo ""
-
-# ────────────────────────────────
-# Check .env for work environment
-# ────────────────────────────────
-
-if [ "$ENV_TYPE" = "work" ]; then
-    if [ ! -f "$SCRIPT_DIR/work/.env" ]; then
-        echo "⚠️  WARNING: work/.env not found!"
-        echo ""
-        echo "Work scripts require configuration. Create .env file:"
-        echo "  cd work"
-        echo "  cp .env.example .env"
-        echo "  nano .env"
-        echo ""
-        read -p "Continue anyway? (y/N): " -n 1 -r
-        echo
-        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-            echo "Cancelled."
+# Parse command-line arguments
+FORCE_MODE=false
+for arg in "$@"; do
+    case $arg in
+        --force)
+            FORCE_MODE=true
+            shift
+            ;;
+        -h|--help)
+            echo "Usage: $0 [--force]"
+            echo ""
+            echo "Options:"
+            echo "  --force    Skip all confirmation prompts"
+            echo "  --help     Show this help message"
             exit 0
-        fi
-    fi
-fi
-
-# ────────────────────────────────
-# Choose Platform
-# ────────────────────────────────
-
-echo "Select platform:"
-echo "  1) 🐧 Linux"
-echo "  2) 🍎 macOS"
-echo ""
-read -p "Choice [1-2]: " PLATFORM_CHOICE
-
-case $PLATFORM_CHOICE in
-    1)
-        PLATFORM="linux"
-        PLATFORM_NAME="Linux"
-        ;;
-    2)
-        PLATFORM="macos"
-        PLATFORM_NAME="macOS"
-        ;;
-    *)
-        echo "❌ Invalid choice"
-        exit 1
-        ;;
-esac
-
-echo ""
-echo "Platform: $PLATFORM_NAME"
-echo ""
-
-# ────────────────────────────────
-# List Available Scripts
-# ────────────────────────────────
-
-BASE_PATH="$SCRIPT_DIR/$ENV_TYPE/$PLATFORM/scripts"
-
-if [ ! -d "$BASE_PATH" ]; then
-    echo "❌ Error: $BASE_PATH not found"
-    exit 1
-fi
-
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "Available Scripts"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo ""
-
-# Find all .sh files and create menu
-declare -a SCRIPTS
-declare -a SCRIPT_PATHS
-INDEX=1
-
-# Environment setup scripts
-if [ -d "$BASE_PATH/enviroment" ]; then
-    echo "📦 Environment Setup:"
-    for script in "$BASE_PATH/enviroment"/*.sh; do
-        if [ -f "$script" ]; then
-            SCRIPT_NAME=$(basename "$script")
-            SCRIPTS[$INDEX]="$SCRIPT_NAME"
-            SCRIPT_PATHS[$INDEX]="$script"
-            echo "  $INDEX) $SCRIPT_NAME"
-            INDEX=$((INDEX + 1))
-        fi
-    done
-    echo ""
-fi
-
-# Utility scripts
-if [ -d "$BASE_PATH/utils" ]; then
-    echo "🛠️  Utilities:"
-    for script in "$BASE_PATH/utils"/*.sh; do
-        if [ -f "$script" ]; then
-            SCRIPT_NAME=$(basename "$script")
-            SCRIPTS[$INDEX]="$SCRIPT_NAME"
-            SCRIPT_PATHS[$INDEX]="$script"
-            echo "  $INDEX) $SCRIPT_NAME"
-            INDEX=$((INDEX + 1))
-        fi
-    done
-    echo ""
-fi
-
-# Other scripts in root
-echo "📄 Other Scripts:"
-for script in "$BASE_PATH"/*.sh; do
-    if [ -f "$script" ]; then
-        SCRIPT_NAME=$(basename "$script")
-        # Skip if already listed
-        if [[ ! " ${SCRIPTS[@]} " =~ " ${SCRIPT_NAME} " ]]; then
-            SCRIPTS[$INDEX]="$SCRIPT_NAME"
-            SCRIPT_PATHS[$INDEX]="$script"
-            echo "  $INDEX) $SCRIPT_NAME"
-            INDEX=$((INDEX + 1))
-        fi
-    fi
+            ;;
+        *)
+            echo "Unknown option: $arg"
+            echo "Use --help for usage information"
+            exit 1
+            ;;
+    esac
 done
 
-if [ ${#SCRIPTS[@]} -eq 0 ]; then
-    echo "❌ No scripts found in $BASE_PATH"
+# Export FORCE_MODE for use in other scripts
+export FORCE_MODE
+
+# ────────────────────────────────────────────────────────────────
+# Platform Detection
+# ────────────────────────────────────────────────────────────────
+
+# Source platform detection module
+if [ ! -f "$SCRIPT_DIR/lib/platform.sh" ]; then
+    echo "ERROR: Platform detection module not found at $SCRIPT_DIR/lib/platform.sh"
     exit 1
 fi
 
+# shellcheck source=lib/platform.sh
+source "$SCRIPT_DIR/lib/platform.sh"
+
+# ────────────────────────────────────────────────────────────────
+# Welcome Banner
+# ────────────────────────────────────────────────────────────────
+
+clear
+echo "╔════════════════════════════════════════════════════════════════╗"
+echo "║         🚀 Rubinho Scripts - System Manager 🚀                ║"
+echo "╚════════════════════════════════════════════════════════════════╝"
 echo ""
-echo "  0) ❌ Cancel"
-echo ""
-read -p "Select script to run [0-$((INDEX-1))]: " SCRIPT_CHOICE
-
-if [ "$SCRIPT_CHOICE" = "0" ]; then
-    echo "Cancelled."
-    exit 0
-fi
-
-if [ -z "${SCRIPT_PATHS[$SCRIPT_CHOICE]}" ]; then
-    echo "❌ Invalid choice"
-    exit 1
-fi
-
-SELECTED_SCRIPT="${SCRIPT_PATHS[$SCRIPT_CHOICE]}"
-SELECTED_NAME="${SCRIPTS[$SCRIPT_CHOICE]}"
-
-echo ""
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "Running: $SELECTED_NAME"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+print_platform_info
 echo ""
 
-# ────────────────────────────────
-# Run Selected Script
-# ────────────────────────────────
+# ────────────────────────────────────────────────────────────────
+# Handler Functions (Placeholders for future implementation)
+# ────────────────────────────────────────────────────────────────
 
-cd "$(dirname "$SELECTED_SCRIPT")"
-bash "$SELECTED_SCRIPT"
+install_tools() {
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "📦 Install Development Tools"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+    echo "This will install:"
+    echo "  • Task Master AI"
+    echo "  • Claude Code CLI"
+    echo "  • Cursor IDE configuration"
+    echo "  • Development tools and utilities"
+    echo ""
 
-echo ""
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "✅ Script completed!"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    if [ "$FORCE_MODE" = false ]; then
+        read -p "Continue with installation? [y/N]: " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            echo "Installation cancelled."
+            return 0
+        fi
+    fi
+
+    echo "⚠️  Tool installation not yet implemented."
+    echo "This will be implemented in RUB-12."
+    echo ""
+}
+
+analyze_disk() {
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "📊 Analyze Disk Space"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+    echo "Analyzing disk usage..."
+    echo ""
+
+    echo "⚠️  Disk analysis not yet implemented."
+    echo "This will be implemented in RUB-14."
+    echo ""
+}
+
+cleanup_files() {
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "🧹 Clean Up Unnecessary Files"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+    echo "This will clean up:"
+    echo "  • Cache files"
+    echo "  • Temporary files"
+    echo "  • Log files"
+    echo "  • Old downloads"
+    echo ""
+
+    if [ "$FORCE_MODE" = false ]; then
+        read -p "Continue with cleanup? [y/N]: " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            echo "Cleanup cancelled."
+            return 0
+        fi
+    fi
+
+    echo "⚠️  Cleanup not yet implemented."
+    echo "This will be implemented in RUB-10."
+    echo ""
+}
+
+# ────────────────────────────────────────────────────────────────
+# Main Menu
+# ────────────────────────────────────────────────────────────────
+
+main_menu() {
+    while true; do
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "What would you like to do?"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo ""
+        echo "  1) 📦 Install development tools"
+        echo "  2) 📊 Analyze disk space"
+        echo "  3) 🧹 Clean up unnecessary files"
+        echo ""
+        echo "  0) ❌ Exit"
+        echo ""
+
+        # Read user choice
+        read -p "Enter your choice [0-3]: " choice
+        echo ""
+
+        case $choice in
+            1)
+                install_tools
+                ;;
+            2)
+                analyze_disk
+                ;;
+            3)
+                cleanup_files
+                ;;
+            0)
+                echo "Goodbye!"
+                exit 0
+                ;;
+            *)
+                echo "❌ Invalid choice. Please enter a number between 0 and 3."
+                echo ""
+                ;;
+        esac
+
+        # Ask if user wants to do something else
+        if [ "$FORCE_MODE" = false ]; then
+            echo ""
+            read -p "Do you want to perform another action? [Y/n]: " -n 1 -r
+            echo ""
+            if [[ $REPLY =~ ^[Nn]$ ]]; then
+                echo "Goodbye!"
+                exit 0
+            fi
+            echo ""
+        else
+            # In force mode, exit after completing one action
+            echo "Force mode: Exiting after completing action."
+            exit 0
+        fi
+    done
+}
+
+# ────────────────────────────────────────────────────────────────
+# Entry Point
+# ────────────────────────────────────────────────────────────────
+
+# Trap Ctrl+C for graceful exit
+trap 'echo ""; echo "Interrupted by user. Exiting..."; exit 2' INT
+
+# Start main menu
+main_menu

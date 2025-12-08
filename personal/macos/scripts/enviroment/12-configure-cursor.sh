@@ -21,6 +21,7 @@ mkdir -p "$CURSOR_USER_DIR"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SETTINGS_PATH="$CURSOR_USER_DIR/settings.json"
 KEYBINDINGS_PATH="$CURSOR_USER_DIR/keybindings.json"
+TASKS_PATH="$CURSOR_USER_DIR/tasks.json"
 
 echo "Detected Cursor directory: $CURSOR_USER_DIR"
 echo ""
@@ -32,6 +33,10 @@ echo "→ settings.json updated successfully!"
 echo "Copying keybindings.json..."
 cp "$SCRIPT_DIR/../config/cursor-keyboard.json" "$KEYBINDINGS_PATH"
 echo "→ keybindings.json updated successfully!"
+
+echo "Copying tasks.json..."
+cp "$SCRIPT_DIR/../config/tasks.json" "$TASKS_PATH"
+echo "→ tasks.json updated successfully!"
 
 echo "=============================================="
 echo "============== [13] DONE ===================="
