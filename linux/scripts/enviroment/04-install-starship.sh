@@ -8,7 +8,7 @@ if [ -z "$INSTALL_ALL_RUNNING" ]; then
     SCRIPT_NAME=$(basename "$0")
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     INSTALL_SCRIPT="$SCRIPT_DIR/00-install-all.sh"
-    
+
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "⚠️  This script should not be executed directly"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -38,12 +38,12 @@ curl -sS https://starship.rs/install.sh | sh
 echo "Copying starship.toml..."
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 mkdir -p ~/.config
-cp "$SCRIPT_DIR/../config/starship.toml" ~/.config/starship.toml
+cp "$SCRIPT_DIR/../../config/starship.toml" ~/.config/starship.toml
 
 echo "Updating .zshrc with Zinit + Starship + custom config..."
 # Copy the complete zsh-config which includes Zinit and Starship
-if [ -f "$SCRIPT_DIR/../config/zsh-config" ]; then
-  cat "$SCRIPT_DIR/../config/zsh-config" > ~/.zshrc
+if [ -f "$SCRIPT_DIR/../../config/zsh-config" ]; then
+  cat "$SCRIPT_DIR/../../config/zsh-config" > ~/.zshrc
   echo "✓ zsh-config applied successfully"
 else
   echo "⚠️  zsh-config not found, using fallback configuration"
@@ -58,4 +58,3 @@ echo "=============================================="
 echo "============== [04] DONE ===================="
 echo "=============================================="
 echo "▶ Next, run: bash 05-install-node-nvm.sh"
-

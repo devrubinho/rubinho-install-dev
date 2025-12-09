@@ -8,7 +8,7 @@ if [ -z "$INSTALL_ALL_RUNNING" ]; then
     SCRIPT_NAME=$(basename "$0")
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     INSTALL_SCRIPT="$SCRIPT_DIR/00-install-all.sh"
-    
+
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "⚠️  This script should not be executed directly"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -29,7 +29,7 @@ fi
 set -e
 
 echo "=============================================="
-echo "========= [14] INSTALLING DOCKER ============="
+echo "========= [12] INSTALLING DOCKER ============="
 echo "=============================================="
 
 # Check if Homebrew is installed
@@ -62,9 +62,8 @@ else
 fi
 
 echo "=============================================="
-echo "============== [14] DONE ===================="
+echo "============== [12] DONE ===================="
 echo "=============================================="
 echo "⚠️  Make sure Docker Desktop is running"
 echo ""
 echo "▶ Next, run: bash 14-configure-terminal.sh (final step)"
-

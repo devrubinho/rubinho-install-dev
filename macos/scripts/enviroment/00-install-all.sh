@@ -2,6 +2,30 @@
 
 set -e
 
+# ────────────────────────────────────────────────────────────────
+# Load Logging Module
+# ────────────────────────────────────────────────────────────────
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/../../../" && pwd)"
+
+# Source logging module if available
+if [ -f "$PROJECT_ROOT/lib/logging.sh" ]; then
+    # shellcheck source=lib/logging.sh
+    source "$PROJECT_ROOT/lib/logging.sh"
+    init_logging
+else
+    # Fallback logging functions if module not available
+    log_info() {
+        echo "[INFO] $*" >&2 || true
+    }
+    log_error() {
+        echo "[ERROR] $*" >&2 || true
+    }
+    log_warning() {
+        echo "[WARNING] $*" >&2 || true
+    }
+fi
+
 echo "=============================================="
 echo "========= COMPLETE INSTALLATION =============="
 echo "=============================================="
@@ -9,8 +33,6 @@ echo ""
 echo "This script will install and configure your development environment."
 echo ""
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/../../../../.." && pwd)"
 ENV_FILE="$PROJECT_ROOT/.env"
 ENV_EXAMPLE="$PROJECT_ROOT/.env.example"
 
@@ -101,39 +123,39 @@ check_and_confirm_installation() {
     local check_command="$2"
     local version_command="${3:-}"
     local skip_if_installed="${4:-false}"
-    
+
     local is_installed=false
     local version="unknown"
-    
+
     # Check if tool is installed
     if eval "$check_command" &>/dev/null; then
         is_installed=true
-        
+
         # Try to get version if version command provided
         if [ -n "$version_command" ]; then
             version=$(eval "$version_command" 2>/dev/null | head -1 | tr -d '\n' || echo "unknown")
         fi
     fi
-    
+
     # If not installed, proceed with installation
     if [ "$is_installed" = false ]; then
         return 0
     fi
-    
+
     # If skip_if_installed is true, skip without asking
     if [ "$skip_if_installed" = true ]; then
         echo "✓ $tool_name is already installed (version: $version). Skipping..."
         log_info "$tool_name already installed (version: $version), skipped"
         return 1
     fi
-    
+
     # In force mode, always reinstall
     if [ "${FORCE_MODE:-false}" = "true" ]; then
         echo "Force mode: $tool_name will be reinstalled (current version: $version)"
         log_info "Force mode: $tool_name will be reinstalled (version: $version)"
         return 0
     fi
-    
+
     # Prompt user for reinstall
     echo ""
     echo "✓ $tool_name is already installed"
@@ -142,14 +164,14 @@ check_and_confirm_installation() {
     fi
     read -p "  Deseja reinstalar? [y/N]: " -n 1 -r
     echo ""
-    
+
     # Check response (default to no)
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
         echo "  Pulando reinstalação de $tool_name..."
         log_info "$tool_name reinstall skipped by user (version: $version)"
         return 1
     fi
-    
+
     echo "  Reinstalando $tool_name..."
     log_info "$tool_name reinstall confirmed by user (version: $version)"
     return 0
@@ -162,11 +184,11 @@ run_script_with_check() {
     local check_command="$3"
     local version_command="${4:-}"
     local skip_if_installed="${5:-false}"
-    
+
     echo ""
     echo "Running script: $script_name"
     echo "=============================================="
-    
+
     # Check and confirm installation
     if check_and_confirm_installation "$tool_name" "$check_command" "$version_command" "$skip_if_installed"; then
         # Execute script
@@ -248,21 +270,28 @@ echo "PHASE 4: Application Setup"
 echo "=============================================="
 
 # Part 4: Applications and configuration
+# Cursor check
+run_script_with_check "09-install-cursor.sh" "Cursor" "[ -d \"/Applications/Cursor.app\" ] || command -v cursor" "[ -d \"/Applications/Cursor.app\" ] && defaults read /Applications/Cursor.app/Contents/Info.plist CFBundleShortVersionString 2>/dev/null || echo 'unknown'"
+
+# Claude Code CLI check (requires Node.js)
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || true
+run_script_with_check "10-install-claude.sh" "Claude Code CLI" "command -v claude || npm list -g @anthropic-ai/claude-code &>/dev/null" "claude --version 2>&1 | head -1 || npm list -g @anthropic-ai/claude-code 2>&1 | grep claude-code | head -1"
+
 # Configuration scripts (no installation checks needed)
 echo ""
 echo "Running: 10-configure-file-watchers.sh"
 echo "=============================================="
 bash "$SCRIPT_DIR/10-configure-file-watchers.sh"
 
-# Cursor extensions (no check needed, just install)
-echo ""
-echo "Running: 11-install-cursor-extensions.sh"
-echo "=============================================="
-bash "$SCRIPT_DIR/11-install-cursor-extensions.sh"
+# Cursor extensions (disabled - install manually)
+# echo ""
+# echo "Running: 11-install-cursor-extensions.sh"
+# echo "=============================================="
+# bash "$SCRIPT_DIR/11-install-cursor-extensions.sh"
 
 # Task Master check
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || true
-run_script_with_check "12-install-task-master.sh" "Task Master" "command -v task-master || npx -y task-master-ai --version &>/dev/null" "npx -y task-master-ai --version 2>&1 | head -1"
+run_script_with_check "12-install-task-master.sh" "Task Master" "command -v task-master-ai" "task-master-ai --version 2>&1 | head -1"
 
 # Cursor configuration (no check needed)
 echo ""
@@ -300,4 +329,3 @@ echo "  node -v"
 echo "  yarn -v"
 echo "  docker --version"
 echo ""
-

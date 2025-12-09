@@ -8,7 +8,7 @@ if [ -z "$INSTALL_ALL_RUNNING" ]; then
     SCRIPT_NAME=$(basename "$0")
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     INSTALL_SCRIPT="$SCRIPT_DIR/00-install-all.sh"
-    
+
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "⚠️  This script should not be executed directly"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -29,7 +29,7 @@ fi
 set -e
 
 echo "=============================================="
-echo "========= [11] CONFIGURING FILE WATCHERS ====="
+echo "========= [09] CONFIGURING FILE WATCHERS ====="
 echo "=============================================="
 
 echo "Configuring file watcher limits for macOS..."
@@ -58,7 +58,7 @@ echo ""
 echo "Or add it to your .zshrc if you experience file watching issues"
 
 echo "=============================================="
-echo "============== [11] DONE ===================="
+echo "============== [09] DONE ===================="
 echo "=============================================="
-echo "▶ Next, run: bash 11-install-cursor-extensions.sh"
-
+echo "▶ Next, run: bash 12-install-task-master.sh"
+echo "   (Note: Extensions should be installed manually)"

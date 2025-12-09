@@ -8,7 +8,7 @@ if [ -z "$INSTALL_ALL_RUNNING" ]; then
     SCRIPT_NAME=$(basename "$0")
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     INSTALL_SCRIPT="$SCRIPT_DIR/00-install-all.sh"
-    
+
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "⚠️  This script should not be executed directly"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -29,7 +29,7 @@ fi
 set -e
 
 echo "=============================================="
-echo "========= [14] CONFIGURING INOTIFY ==========="
+echo "========= [12] CONFIGURING INOTIFY ==========="
 echo "=============================================="
 
 echo "Setting inotify max_user_watches..."
@@ -47,7 +47,7 @@ echo "Verifying setting..."
 cat /proc/sys/fs/inotify/max_user_watches
 
 echo "=============================================="
-echo "============== [14] DONE ===================="
+echo "============== [12] DONE ===================="
 echo "=============================================="
-echo "▶ Next, run: bash 13-install-cursor-extensions.sh"
-
+echo "▶ Next, run: bash 13-install-task-master.sh"
+echo "   (Note: Extensions should be installed manually)"

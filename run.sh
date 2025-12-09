@@ -133,11 +133,11 @@ setup_environment_variables() {
     echo ""
     echo "Checking required environment variables..."
     echo ""
-    
+
     # Check if .env exists, if not create from .env.example
     local env_file="$SCRIPT_DIR/.env"
     local env_example="$SCRIPT_DIR/.env.example"
-    
+
     if [ ! -f "$env_file" ]; then
         if [ -f "$env_example" ]; then
             echo "📝 Creating .env file from .env.example..."
@@ -151,22 +151,20 @@ setup_environment_variables() {
             echo ""
         fi
     fi
-    
+
     # Variables that might be needed for installation
     local required_vars=(
         "GIT_USER_NAME:Your Git user name (for Git commits):true"
         "GIT_USER_EMAIL:Your Git user email (for Git commits):true"
     )
-    
+
     local optional_vars=(
-        "ANTHROPIC_API_KEY:Anthropic API key (for Task Master and Claude):false"
-        "PERPLEXITY_API_KEY:Perplexity API key (optional, for research features):false"
     )
-    
+
     # Check required variables
     for var_info in "${required_vars[@]}"; do
         IFS=':' read -r var_name prompt_text is_required <<< "$var_info"
-        
+
         # Check if variable exists in .env
         local value
         if [ -f "$env_file" ]; then
@@ -175,7 +173,7 @@ setup_environment_variables() {
                 # Skip comments and empty lines
                 [[ "$line" =~ ^[[:space:]]*# ]] && continue
                 [[ -z "${line// }" ]] && continue
-                
+
                 # Check if this line matches our variable
                 if [[ "$line" =~ ^[[:space:]]*${var_name}[[:space:]]*=[[:space:]]*(.+)$ ]]; then
                     value="${BASH_REMATCH[1]}"
@@ -191,7 +189,7 @@ setup_environment_variables() {
                 fi
             done < "$env_file"
         fi
-        
+
         # If not found or empty (after removing quotes and spaces), prompt user
         if [ -z "${value// }" ] || [ -z "$value" ]; then
             echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -200,10 +198,10 @@ setup_environment_variables() {
             echo ""
             echo "$prompt_text"
             echo ""
-            
+
             while true; do
                 read -p "Enter value for $var_name: " user_input
-                
+
                 if [ -z "$user_input" ]; then
                     if [ "$is_required" = "true" ]; then
                         echo "❌ Error: $var_name is required and cannot be empty."
@@ -228,7 +226,7 @@ setup_environment_variables() {
                         # Append new line
                         echo "${var_name}=\"${user_input}\"" >> "$env_file"
                     fi
-                    
+
                     echo "✓ Saved $var_name to .env file"
                     echo ""
                     break
@@ -238,101 +236,13 @@ setup_environment_variables() {
             echo "✓ Found $var_name in .env file (using existing value)"
         fi
     done
-    
+
     # Check optional variables (only prompt if user wants to configure them)
     echo ""
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "📋 Optional Configuration"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo ""
-    echo "You can configure optional API keys now, or skip and configure later."
-    echo ""
-    
-    if [ "$FORCE_MODE" = false ]; then
-        read -p "Configure optional API keys now? [y/N]: " -n 1 -r
-        echo ""
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
-            for var_info in "${optional_vars[@]}"; do
-                IFS=':' read -r var_name prompt_text is_required <<< "$var_info"
-                
-                # Check if variable exists in .env
-                local value=""
-                if [ -f "$env_file" ]; then
-                    # Try to read from .env
-                    while IFS= read -r line || [ -n "$line" ]; do
-                        # Skip comments and empty lines
-                        [[ "$line" =~ ^[[:space:]]*# ]] && continue
-                        [[ -z "${line// }" ]] && continue
-                        
-                        # Check if this line matches our variable
-                        if [[ "$line" =~ ^[[:space:]]*${var_name}[[:space:]]*=[[:space:]]*(.+)$ ]]; then
-                            value="${BASH_REMATCH[1]}"
-                            # Remove quotes if present
-                            value="${value#\"}"
-                            value="${value%\"}"
-                            value="${value#\'}"
-                            value="${value%\'}"
-                            # Remove leading/trailing whitespace
-                            value="${value#"${value%%[![:space:]]*}"}"
-                            value="${value%"${value##*[![:space:]]}"}"
-                            break
-                        fi
-                    done < "$env_file"
-                fi
-                
-                # If not found or empty, prompt user
-                if [ -z "${value// }" ] || [ -z "$value" ]; then
-                    echo ""
-                    echo "$prompt_text"
-                    read -p "Enter value for $var_name (or press Enter to skip): " user_input
-                    
-                    if [ -n "$user_input" ]; then
-                        # Remove empty value if exists
-                        if grep -q "^[[:space:]]*${var_name}[[:space:]]*=" "$env_file" 2>/dev/null; then
-                            if [[ "$OSTYPE" == "darwin"* ]]; then
-                                sed -i '' "/^[[:space:]]*${var_name}[[:space:]]*=/d" "$env_file"
-                            else
-                                sed -i "/^[[:space:]]*${var_name}[[:space:]]*=/d" "$env_file"
-                            fi
-                        fi
-                        echo "${var_name}=\"${user_input}\"" >> "$env_file"
-                        echo "✓ Saved $var_name to .env file"
-                    else
-                        echo "⏭️  Skipped $var_name"
-                    fi
-                else
-                    # Verify value is not empty after trimming
-                    local trimmed_value="${value#"${value%%[![:space:]]*}"}"
-                    trimmed_value="${trimmed_value%"${trimmed_value##*[![:space:]]}"}"
-                    if [ -z "$trimmed_value" ] || [ -z "${trimmed_value// }" ]; then
-                        # Value exists but is empty, treat as missing
-                        echo "⚠️  Found $var_name in .env but value is empty. Will prompt for input."
-                        # Remove the empty value line
-                        if [[ "$OSTYPE" == "darwin"* ]]; then
-                            sed -i '' "/^[[:space:]]*${var_name}[[:space:]]*=/d" "$env_file"
-                        else
-                            sed -i "/^[[:space:]]*${var_name}[[:space:]]*=/d" "$env_file"
-                        fi
-                        # Prompt for input
-                        echo ""
-                        echo "$prompt_text"
-                        read -p "Enter value for $var_name (or press Enter to skip): " user_input
-                        if [ -n "$user_input" ]; then
-                            echo "${var_name}=\"${user_input}\"" >> "$env_file"
-                            echo "✓ Saved $var_name to .env file"
-                        else
-                            echo "⏭️  Skipped $var_name"
-                        fi
-                    else
-                        echo "✓ Found $var_name in .env file (using existing value)"
-                    fi
-                fi
-            done
-        else
-            echo "⏭️  Skipping optional API keys configuration"
-        fi
-    fi
-    
+
     echo ""
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "✅ Environment configuration complete"
@@ -610,10 +520,10 @@ installation_module() {
     echo "Each tool will be checked before installation, and you'll be asked"
     echo "to confirm if it's already installed."
     echo ""
-    
+
     # Setup environment variables before installation
     setup_environment_variables
-    
+
     if [ "$FORCE_MODE" = false ]; then
         read -p "Continue with installation? [y/N]: " -n 1 -r
         echo
@@ -623,7 +533,7 @@ installation_module() {
             return 0
         fi
     fi
-    
+
     # Determine platform-specific script path
     local install_script
     if is_macos; then
@@ -635,22 +545,22 @@ installation_module() {
         log_error "Unsupported platform: $PLATFORM_NAME"
         return 1
     fi
-    
+
     # Validate script exists
     if [ ! -f "$install_script" ]; then
         echo "❌ Error: Installation script not found at: $install_script"
         log_error "Installation script not found: $install_script"
         return 1
     fi
-    
+
     # Make script executable
     chmod +x "$install_script" 2>/dev/null || true
-    
+
     echo ""
     echo "🚀 Starting installation..."
     echo ""
     log_info "Starting installation module: $install_script"
-    
+
     # Execute installation script
     if bash "$install_script"; then
         echo ""
@@ -680,10 +590,10 @@ cleanup_module() {
         echo ""
         echo "  0) ⬅️  Back to main menu"
         echo ""
-        
+
         read -p "Enter your choice [0-2]: " choice
         echo ""
-        
+
         case $choice in
             1)
                 analyze_disk
@@ -700,7 +610,7 @@ cleanup_module() {
                 echo ""
                 ;;
         esac
-        
+
         # Ask if user wants to do something else in cleanup module
         if [ "$FORCE_MODE" = false ]; then
             echo ""
@@ -732,12 +642,12 @@ main_menu() {
         echo "  2) 🧹 Cleanup Module"
         echo "     Analyze disk space and clean up files"
         echo ""
-        
+
         # Show Linux-specific option only on Linux
         if is_linux; then
             echo "  3) 🛠️  Fix Linux user login issues"
         fi
-        
+
         echo ""
         echo "  0) ❌ Exit"
         echo ""

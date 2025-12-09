@@ -8,7 +8,7 @@ if [ -z "$INSTALL_ALL_RUNNING" ]; then
     SCRIPT_NAME=$(basename "$0")
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     INSTALL_SCRIPT="$SCRIPT_DIR/00-install-all.sh"
-    
+
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "⚠️  This script should not be executed directly"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -72,7 +72,7 @@ fi
 # If direct download failed, try alternative methods
 if [ "$INSTALLED" = false ]; then
   echo "Trying alternative installation method..."
-  
+
   # Check if cursor is already installed
   if command -v cursor &> /dev/null; then
     echo "✓ Cursor is already installed"
@@ -92,7 +92,7 @@ fi
 
 if [ "$INSTALLED" = true ]; then
   echo "Verifying installation..."
-  
+
   # Find the correct cursor executable
   CURSOR_CMD=""
   if [ -f "/usr/share/cursor/bin/cursor" ]; then
@@ -102,19 +102,19 @@ if [ "$INSTALLED" = true ]; then
   elif [ -f "/opt/cursor/cursor" ]; then
     CURSOR_CMD="/opt/cursor/cursor"
   fi
-  
+
   # Remove incorrect /usr/local/bin/cursor if it exists and is not executable
   if [ -f "/usr/local/bin/cursor" ] && ! /usr/local/bin/cursor --version &> /dev/null; then
     echo "Removing incorrect cursor symlink..."
     sudo rm -f /usr/local/bin/cursor
   fi
-  
+
   # Create correct symlink if cursor is installed but not in PATH
   if [ -n "$CURSOR_CMD" ] && [ ! -f "/usr/local/bin/cursor" ]; then
     echo "Creating cursor symlink..."
     sudo ln -sf "$CURSOR_CMD" /usr/local/bin/cursor
   fi
-  
+
   # Verify installation
   if [ -n "$CURSOR_CMD" ] && $CURSOR_CMD --version &> /dev/null; then
     echo "✓ Cursor installed successfully!"
@@ -133,5 +133,4 @@ fi
 echo "=============================================="
 echo "============== [09] DONE ===================="
 echo "=============================================="
-echo "▶ Next, run: bash 10-configure-terminal.sh"
-
+echo "▶ Next, run: bash 10-install-claude.sh"

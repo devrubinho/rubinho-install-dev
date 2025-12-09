@@ -94,10 +94,11 @@ bash 06-install-yarn.sh
 bash 07-install-tools.sh
 bash 08-install-font-jetbrains.sh
 bash 09-install-cursor.sh
+bash 10-install-claude.sh
 bash 10-configure-terminal.sh
 bash 11-configure-ssh.sh
 bash 12-configure-inotify.sh
-bash 13-install-cursor-extensions.sh
+bash 13-install-task-master.sh
 bash 14-configure-cursor.sh
 bash 15-install-docker.sh       # ⚠️ Logout/login after this
 bash 16-install-insomnia.sh
@@ -146,14 +147,15 @@ bash 05-install-node-nvm.sh
 bash 06-install-yarn.sh
 bash 07-install-tools.sh
 bash 08-install-font-jetbrains.sh
-bash 10-configure-ssh.sh
-bash 11-configure-file-watchers.sh
-bash 12-install-cursor-extensions.sh
-bash 13-configure-cursor.sh
-bash 14-install-docker.sh
-bash 15-configure-terminal.sh
-bash 16-install-insomnia.sh
-bash 17-install-tableplus.sh
+bash 09-install-cursor.sh
+bash 10-install-claude.sh
+bash 10-configure-file-watchers.sh
+bash 12-install-task-master.sh
+bash 12-configure-cursor.sh
+bash 13-install-docker.sh
+bash 14-configure-terminal.sh
+bash 15-install-insomnia.sh
+bash 16-install-tableplus.sh
 ```
 
 ### Work Environment (Optional)
@@ -580,9 +582,9 @@ nano .env  # Fill in your company details
 See [work/.env.example](work/.env.example) for complete list.
 
 **Benefits:**
-✅ No hardcoded company information  
-✅ Easy to share with team  
-✅ Secure (gitignored)  
+✅ No hardcoded company information
+✅ Easy to share with team
+✅ Secure (gitignored)
 ✅ Works for any organization
 
 ---
@@ -592,7 +594,7 @@ See [work/.env.example](work/.env.example) for complete list.
 ### **00-install-all.sh** (Master Script)
 Runs all installation scripts in sequence automatically.
 - Prompts for Git user name and email at the start
-- Executes scripts 01-18 (Linux) or 01-17 (macOS) in the correct order
+- Executes scripts 01-17 (Linux) or 01-16 (macOS) in the correct order
 - Automatically loads NVM and environment configurations during installation
 - Handles all setup phases: Initial Setup, Environment Configuration, Development Tools, and Application Setup
 - **Note:** After completion, close and reopen your terminal to ensure all configurations are applied
@@ -668,18 +670,19 @@ Installs JetBrains Mono Nerd Font.
 
 ---
 
-### **09-install-cursor.sh** (Linux only)
-Installs Cursor Editor on Linux.
-- Downloads Cursor .deb package
-- Installs via dpkg
+### **09-install-cursor.sh**
+Installs Cursor Editor.
+- **Linux**: Downloads Cursor .deb package and installs via dpkg
+- **macOS**: Installs via Homebrew Cask or direct download
 - Verifies installation
 
-### **09-configure-terminal.sh** (macOS only)
-Configures iTerm2 with Dracula theme.
-- Clones Dracula theme repository
-- Provides instructions for manual configuration
-- Sets font to JetBrainsMono Nerd Font 16pt
-- Applies Dracula color preset
+---
+
+### **10-install-claude.sh**
+Installs Claude Code CLI.
+- Installs `@anthropic-ai/claude-code` via npm globally
+- Makes `claude` command available
+- Requires Node.js (installed in script 05)
 
 ---
 
@@ -690,6 +693,13 @@ Configures GNOME Terminal with Dracula theme.
 - Applies Dracula theme
 - Configures JetBrains Mono Nerd Font
 - Removes old profiles
+
+---
+
+### **10-configure-file-watchers.sh** (macOS only)
+Configures file watcher limits for macOS.
+- Adjusts system limits for file watching
+- Applies changes
 
 ---
 
@@ -708,25 +718,6 @@ Configures SSH for Git.
 
 ---
 
-### **10-configure-ssh.sh** (macOS only)
-Configures SSH for Git.
-- Uses Git email from environment or prompts for it
-- Generates ed25519 SSH key with the provided email
-- Configures SSH agent
-- Sets correct permissions
-- Copies public key to clipboard
-
-**👉 After running:** Add the SSH key to GitHub/GitLab.
-
-**Note:** When running via `00-install-all.sh`, the email is collected at the start and used automatically.
-
----
-
-### **11-configure-file-watchers.sh** (macOS only)
-Configures file watcher limits for macOS.
-- Adjusts system limits for file watching
-- Applies changes
-
 ### **12-configure-inotify.sh** (Linux only)
 Configures inotify limits for file watching.
 - Increases `max_user_watches` to 524288
@@ -737,42 +728,23 @@ Configures inotify limits for file watching.
 
 ### **12-install-task-master.sh** (macOS) / **13-install-task-master.sh** (Linux)
 Installs and configures Task Master AI (MCP server for Cursor).
-- Opens Task Master installation page in browser
-- Guides through one-click installation in Cursor
-- Reads API keys from `.env` file
-- Automatically configures `mcp.json` with API keys
-- Sets up Anthropic, Perplexity, OpenAI, and Google API keys
+- Installs Task Master automatically via `npx -y task-master-ai`
+- Configures `mcp.json` for Cursor integration
+- Sets up MCP server connection
 
 **Requirements:**
 - Cursor IDE installed
-- API keys in `.env` file (see `.env.example`)
+- Node.js installed (installed in script 05)
 
 **👉 After running:**
-1. Complete one-click installation in Cursor
-2. Verify API keys in `~/.cursor/mcp.json`
+1. Verify Task Master installation: `npx -y task-master-ai --version`
+2. Check MCP configuration in `~/.cursor/mcp.json`
 3. Enable Task Master in Cursor settings (MCP tab)
 4. Initialize Task Master in your project
 
 ---
 
-### **13-install-cursor-extensions.sh**
-Installs essential Cursor extensions.
-- Color Highlight
-- DotENV
-- ESLint
-- GitLens
-- Markdown Preview Enhanced
-- Prisma
-- px to rem
-- Reload
-- Tailwind CSS IntelliSense
-- Indent Rainbow
-- Symbols (icons)
-- Catppuccin (theme)
-
----
-
-### **14-configure-cursor.sh**
+### **12-configure-cursor.sh** (macOS) / **14-configure-cursor.sh** (Linux)
 Applies Cursor configurations.
 - Copies `settings.json` to Cursor
 - Copies `keybindings.json` to Cursor
@@ -782,33 +754,43 @@ Applies Cursor configurations.
 
 ---
 
-### **15-install-docker.sh** (Linux only)
-Installs Docker and Docker Compose.
-- Removes old Docker installations
-- Adds official Docker repository
-- Installs Docker Engine, Docker Compose and plugins
-- Adds user to docker group
+### **13-install-docker.sh** (macOS) / **15-install-docker.sh** (Linux)
+Installs Docker.
+- **macOS**: Installs Docker Desktop via Homebrew Cask
+- **Linux**: Installs Docker Engine and Docker Compose via official repository
+- Adds user to docker group (Linux only)
 
-**⚠️ After running:** Logout/login to use Docker without sudo.
-
----
-
-### **14-install-docker.sh** (macOS only)
-Installs Docker Desktop for macOS.
-- Installs via Homebrew Cask
-- Configures Docker Desktop
-
-**⚠️ After running:** Make sure Docker Desktop is running.
+**⚠️ After running:**
+- **macOS**: Make sure Docker Desktop is running
+- **Linux**: Logout/login to use Docker without sudo
 
 ---
 
-### **16-install-insomnia.sh** (Linux only)
-Installs Insomnia REST Client for Linux.
-- Adds Insomnia repository
-- Installs via apt
+### **14-configure-terminal.sh** (macOS only)
+Configures iTerm2 with Dracula theme.
+- Clones Dracula theme repository
+- Provides instructions for manual configuration
+- Sets font to JetBrainsMono Nerd Font 16pt
+- Applies Dracula color preset
+
+---
+
+### **15-install-insomnia.sh** (macOS) / **16-install-insomnia.sh** (Linux)
+Installs Insomnia REST Client.
+- **macOS**: Installs via Homebrew Cask
+- **Linux**: Adds Insomnia repository and installs via apt
 - Useful for API testing and development
 
-**👉 After running:** Run `18-install-heidisql.sh` to install database tool.
+---
+
+### **16-install-tableplus.sh** (macOS only)
+Installs TablePlus for macOS (alternative to HeidiSQL).
+- Modern, native macOS database client
+- Supports MySQL, PostgreSQL, SQLite, Redis, and many more
+- Installs via Homebrew Cask
+- Beautiful interface with similar functionality to HeidiSQL
+
+**📝 Note:** TablePlus is a native macOS app that provides excellent database management capabilities, similar to HeidiSQL.
 
 ---
 
@@ -820,26 +802,6 @@ Installs HeidiSQL for Linux.
 - Guides user through download and installation process
 
 **📝 Note:** HeidiSQL has an official Linux version available as .deb package. The script will guide you to download and install it.
-
----
-
-### **16-install-insomnia.sh** (macOS only)
-Installs Insomnia REST Client for macOS.
-- Installs via Homebrew Cask
-- Useful for API testing and development
-
-**👉 After running:** Run `17-install-tableplus.sh` to install database tool.
-
----
-
-### **17-install-tableplus.sh** (macOS only)
-Installs TablePlus for macOS (alternative to HeidiSQL).
-- Modern, native macOS database client
-- Supports MySQL, PostgreSQL, SQLite, Redis, and many more
-- Installs via Homebrew Cask
-- Beautiful interface with similar functionality to HeidiSQL
-
-**📝 Note:** TablePlus is a native macOS app that provides excellent database management capabilities, similar to HeidiSQL.
 
 ---
 
@@ -860,7 +822,7 @@ rubinho-scripts/
 │   │   └── zsh-config
 │   ├── readme.md            # Linux-specific docs
 │   └── scripts/
-│       ├── enviroment/      # Setup scripts (01-18)
+│       ├── enviroment/      # Setup scripts (01-17)
 │       └── utils/           # Disk space tools
 │           ├── analyze_space.sh
 │           └── clean_space.sh
@@ -869,7 +831,7 @@ rubinho-scripts/
 │   ├── config/              # Dotfiles & themes
 │   ├── readme.md            # macOS-specific docs
 │   └── scripts/
-│       ├── enviroment/      # Setup scripts (01-17)
+│       ├── enviroment/      # Setup scripts (01-16)
 │       └── utils/           # Disk space tools
 │           ├── analyze_space.sh
 │           └── clean_space.sh
@@ -973,14 +935,11 @@ chmod +x macos/scripts/enviroment/*.sh
 **Problem:** Task Master commands fail or show "No tasks found"
 
 **Solution:**
-1. Verify API keys in `.env` file:
-   ```bash
-   ANTHROPIC_API_KEY=sk-ant-...
-   PERPLEXITY_API_KEY=pplx-...  # Optional
-   ```
+1. Verify Task Master installation: `npx -y task-master-ai --version`
 2. Check MCP configuration in `~/.cursor/mcp.json`
 3. Restart Cursor IDE
 4. Verify Task Master is enabled in Cursor settings (MCP tab)
+5. Initialize Task Master in your project: `npx -y task-master-ai init`
 
 #### Cleanup script asks for confirmation too many times
 **Problem:** Too many confirmation prompts
@@ -1006,74 +965,73 @@ chmod +x macos/scripts/enviroment/*.sh
 
 ### General
 
-**Q: Do I need to run all scripts?**  
+**Q: Do I need to run all scripts?**
 A: No, you can run individual scripts as needed. However, some scripts depend on others (e.g., Yarn needs Node.js).
 
-**Q: Can I run scripts multiple times?**  
+**Q: Can I run scripts multiple times?**
 A: Yes! Scripts check if tools are already installed and ask if you want to reinstall.
 
-**Q: Will this affect my existing setup?**  
+**Q: Will this affect my existing setup?**
 A: Scripts are designed to be safe and non-destructive. They will:
 - Ask before overwriting existing configurations
 - Check for existing installations
 - Preserve your data
 
-**Q: What if I'm on a different Linux distribution?**  
+**Q: What if I'm on a different Linux distribution?**
 A: Scripts are tested on Ubuntu/Debian. For other distributions, you may need to adjust package manager commands.
 
 ### Installation
 
-**Q: How long does installation take?**  
+**Q: How long does installation take?**
 A: Depends on your internet speed and system. Typically 15-30 minutes for a full installation.
 
-**Q: Can I install tools selectively?**  
+**Q: Can I install tools selectively?**
 A: Yes! Use `run.sh` Installation Module - it asks for each tool individually.
 
-**Q: What if a tool installation fails?**  
+**Q: What if a tool installation fails?**
 A: The script will show an error message. Fix the issue and re-run. The script will skip already-installed tools.
 
 ### Cleanup
 
-**Q: Is cleanup safe?**  
+**Q: Is cleanup safe?**
 A: Yes, but always review what will be deleted. The script shows previews before deletion.
 
-**Q: Will cleanup delete my projects?**  
+**Q: Will cleanup delete my projects?**
 A: No. It only removes:
 - Build artifacts (node_modules, dist, build folders)
 - Caches
 - Temporary files
 - Docker containers/images (if you confirm)
 
-**Q: Can I recover deleted files?**  
+**Q: Can I recover deleted files?**
 A: Files deleted by cleanup are permanently removed. Always review the preview before confirming.
 
-**Q: How much space can I free?**  
+**Q: How much space can I free?**
 A: Typically 5-50 GB depending on your development setup. Docker images can take significant space.
 
 ### Environment Variables
 
-**Q: Do I need a `.env` file?**  
+**Q: Do I need a `.env` file?**
 A: It's optional but recommended. Scripts will prompt for values if not found in `.env`.
 
-**Q: What should I put in `.env`?**  
+**Q: What should I put in `.env`?**
 A: See `.env.example` for a complete list. At minimum:
 - `GIT_USER_NAME`
 - `GIT_USER_EMAIL`
-- `ANTHROPIC_API_KEY` (for Task Master)
 
-**Q: Is `.env` safe to commit?**  
+**Q: Is `.env` safe to commit?**
 A: No! `.env` is in `.gitignore`. Never commit it with real API keys.
 
 ### Task Master
 
-**Q: What is Task Master?**  
+**Q: What is Task Master?**
 A: Task Master is an AI-powered task management system integrated with Cursor IDE. It helps manage project tasks using AI.
 
-**Q: Do I need Task Master?**  
+**Q: Do I need Task Master?**
 A: No, it's optional. But it's very useful for managing complex projects.
 
-**Q: How do I set up Task Master?**  
-A: Run `13-install-task-master.sh` (Linux) or `12-install-task-master.sh` (macOS). It will guide you through the setup.
+**Q: How do I set up Task Master?**
+A: Task Master is installed automatically via `npx` during the installation process. Run `13-install-task-master.sh` (Linux) or `12-install-task-master.sh` (macOS) if you need to reinstall or configure it manually.
 
 ---
 

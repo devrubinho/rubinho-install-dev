@@ -8,7 +8,7 @@ if [ -z "$INSTALL_ALL_RUNNING" ]; then
     SCRIPT_NAME=$(basename "$0")
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     INSTALL_SCRIPT="$SCRIPT_DIR/00-install-all.sh"
-    
+
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "⚠️  This script should not be executed directly"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -29,7 +29,7 @@ fi
 set -e
 
 echo "=============================================="
-echo "========= [12] CONFIGURING SSH =============="
+echo "========= [11] CONFIGURING SSH =============="
 echo "=============================================="
 
 echo "Installing OpenSSH and xclip..."
@@ -62,9 +62,8 @@ echo "Copying public key to clipboard..."
 cat ~/.ssh/id_ed25519.pub | xclip -sel clip
 
 echo "=============================================="
-echo "============== [12] DONE ===================="
+echo "============== [11] DONE ===================="
 echo "=============================================="
 echo "✅ SSH public key copied to clipboard!"
 echo "   Go to GitHub/GitLab Settings → SSH Keys and paste it."
 echo "▶ Next, run: bash 12-configure-inotify.sh"
-

@@ -8,7 +8,7 @@ if [ -z "$INSTALL_ALL_RUNNING" ]; then
     SCRIPT_NAME=$(basename "$0")
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     INSTALL_SCRIPT="$SCRIPT_DIR/00-install-all.sh"
-    
+
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "⚠️  This script should not be executed directly"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -29,7 +29,7 @@ fi
 set -e
 
 echo "=============================================="
-echo "========= [16] CONFIGURING CURSOR ============"
+echo "========= [14] CONFIGURING CURSOR ============"
 echo "=============================================="
 
 # Determine Cursor user directory based on OS
@@ -53,22 +53,24 @@ echo "Detected Cursor directory: $CURSOR_USER_DIR"
 echo ""
 
 echo "Copying settings.json..."
-cp "$SCRIPT_DIR/../config/user-settings.json" "$SETTINGS_PATH"
+cp "$SCRIPT_DIR/../../config/user-settings.json" "$SETTINGS_PATH"
 echo "→ settings.json updated successfully!"
 
 echo "Copying keybindings.json..."
-cp "$SCRIPT_DIR/../config/cursor-keyboard.json" "$KEYBINDINGS_PATH"
+cp "$SCRIPT_DIR/../../config/cursor-keyboard.json" "$KEYBINDINGS_PATH"
 echo "→ keybindings.json updated successfully!"
 
 echo "Copying tasks.json..."
-cp "$SCRIPT_DIR/../config/tasks.json" "$TASKS_PATH"
-echo "→ tasks.json updated successfully!"
+if cp "$SCRIPT_DIR/../../config/tasks.json" "$TASKS_PATH" 2>/dev/null; then
+    echo "→ tasks.json updated successfully!"
+else
+    echo "⚠️  tasks.json not found (optional file, skipping)"
+fi
 
 echo "=============================================="
-echo "============== [16] DONE ===================="
+echo "============== [14] DONE ===================="
 echo "=============================================="
 echo "🎉 Cursor configured successfully!"
 echo "   Open Cursor again to apply everything."
 echo ""
 echo "▶ Next, run: bash 15-install-docker.sh"
-

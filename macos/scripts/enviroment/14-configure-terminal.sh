@@ -8,7 +8,7 @@ if [ -z "$INSTALL_ALL_RUNNING" ]; then
     SCRIPT_NAME=$(basename "$0")
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     INSTALL_SCRIPT="$SCRIPT_DIR/00-install-all.sh"
-    
+
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "⚠️  This script should not be executed directly"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -29,7 +29,7 @@ fi
 set -e
 
 echo "=============================================="
-echo "===== [15] CONFIGURE iTERM2 TERMINAL ========="
+echo "===== [13] CONFIGURE iTERM2 TERMINAL ========="
 echo "=============================================="
 
 # Check if Homebrew is installed
@@ -104,11 +104,10 @@ echo ""
 echo "7. Close Preferences and restart iTerm2 (⌘Q)"
 echo ""
 echo "=============================================="
-echo "============== [15] DONE ===================="
+echo "============== [13] DONE ===================="
 echo "=============================================="
 echo ""
 echo "🎉 INSTALLATION COMPLETE!"
 echo "=============================================="
 echo "All scripts have been executed successfully!"
 echo "Restart the terminal to apply all changes."
-

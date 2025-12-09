@@ -8,7 +8,7 @@ if [ -z "$INSTALL_ALL_RUNNING" ]; then
     SCRIPT_NAME=$(basename "$0")
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     INSTALL_SCRIPT="$SCRIPT_DIR/00-install-all.sh"
-    
+
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "⚠️  This script should not be executed directly"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -29,7 +29,7 @@ fi
 set -e
 
 echo "=============================================="
-echo "========= [22] INSTALLING INSOMNIA ==========="
+echo "========= [14] INSTALLING INSOMNIA ==========="
 echo "=============================================="
 
 # Check if Homebrew is installed
@@ -45,7 +45,7 @@ if brew list --cask insomnia &> /dev/null 2>&1; then
 else
     echo "Installing Insomnia via Homebrew..."
     brew install --cask insomnia
-    
+
     # Verify installation
     if [ -d "/Applications/Insomnia.app" ]; then
         echo "✓ Insomnia installed successfully"
@@ -55,7 +55,6 @@ else
 fi
 
 echo "=============================================="
-echo "============== [22] DONE ===================="
+echo "============== [14] DONE ===================="
 echo "=============================================="
 echo "▶ Next, run: bash 16-install-tableplus.sh"
-

@@ -29,47 +29,48 @@ fi
 set -e
 
 echo "=============================================="
-echo "========= [15] INSTALLING DOCKER ============="
+echo "========= [10] INSTALLING CLAUDE CLI ========="
 echo "=============================================="
 
-echo "Updating system..."
-sudo apt update -y && sudo apt upgrade -y
+# Load NVM if available
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || true
 
-echo "Removing old Docker installations..."
-sudo apt remove -y docker docker-engine docker.io containerd runc || true
+# Check if Node.js/npm is available
+if ! command -v npm &> /dev/null; then
+    echo "⚠️  npm not found. Claude Code CLI requires Node.js/npm."
+    echo "   Please install Node.js first (script 05-install-node-nvm.sh)"
+    echo "   Claude Code CLI will be installed when Node.js is available."
+    exit 0
+fi
 
-echo "Installing required dependencies..."
-sudo apt install -y ca-certificates curl gnupg lsb-release
+echo "Installing Claude Code CLI via npm..."
 
-echo "Adding Docker GPG Key..."
-sudo install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
-  sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-sudo chmod a+r /etc/apt/keyrings/docker.gpg
+# Check if already installed
+if npm list -g @anthropic-ai/claude-code &> /dev/null; then
+    VERSION=$(npm list -g @anthropic-ai/claude-code 2>/dev/null | grep claude-code | head -1 || echo "unknown")
+    echo "✓ Claude Code CLI is already installed"
+    echo "  Version: $VERSION"
+else
+    echo "→ Installing @anthropic-ai/claude-code..."
+    if npm install -g @anthropic-ai/claude-code; then
+        echo "✓ Claude Code CLI installed successfully"
 
-echo "Adding Docker Repository..."
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
-  https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
-  | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-sudo apt update -y
-
-echo "Installing Docker Engine..."
-sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
-echo "Testing Docker..."
-sudo docker run hello-world || true
-
-echo "Adding current user to docker group..."
-sudo usermod -aG docker $USER
+        # Verify installation
+        if command -v claude &> /dev/null; then
+            echo "✓ Claude command is available"
+            claude --version 2>/dev/null || echo "⚠️  Version check failed, but Claude is installed"
+        else
+            echo "⚠️  Claude command not found in PATH"
+            echo "   You may need to restart your terminal or add npm global bin to PATH"
+        fi
+    else
+        echo "❌ Failed to install Claude Code CLI"
+        exit 1
+    fi
+fi
 
 echo "=============================================="
-echo "============== [15] DONE ===================="
+echo "============== [10] DONE ===================="
 echo "=============================================="
-echo "⚠️  Logout/Login required to use Docker without sudo"
-echo ""
-echo "🎉 INSTALLATION COMPLETE!"
-echo "=============================================="
-echo "All scripts have been executed successfully!"
-echo "Restart the terminal to apply all changes."
+echo "▶ Next, run: bash 10-configure-file-watchers.sh"

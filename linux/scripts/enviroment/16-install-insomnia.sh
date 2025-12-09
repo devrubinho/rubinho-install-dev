@@ -8,7 +8,7 @@ if [ -z "$INSTALL_ALL_RUNNING" ]; then
     SCRIPT_NAME=$(basename "$0")
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     INSTALL_SCRIPT="$SCRIPT_DIR/00-install-all.sh"
-    
+
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "⚠️  This script should not be executed directly"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -29,7 +29,7 @@ fi
 set -e
 
 echo "=============================================="
-echo "========= [17] INSTALLING INSOMNIA ==========="
+echo "========= [16] INSTALLING INSOMNIA ==========="
 echo "=============================================="
 
 # Check if Insomnia is already installed
@@ -38,29 +38,29 @@ if command -v insomnia &> /dev/null; then
     echo "Skipping installation..."
 else
     echo "Installing Insomnia..."
-    
+
     # Add Insomnia repository
     echo "Adding Insomnia repository..."
-    
+
     # Create keyrings directory if it doesn't exist
     sudo mkdir -p /etc/apt/keyrings
-    
+
     # Add GPG key (modern method)
     echo "Adding GPG key..."
     curl -fsSL https://insomnia.rest/keys/debian-public.key.asc | sudo gpg --dearmor -o /etc/apt/keyrings/insomnia.gpg
     sudo chmod a+r /etc/apt/keyrings/insomnia.gpg
-    
+
     # Add repository with signed-by
     echo "deb [signed-by=/etc/apt/keyrings/insomnia.gpg] https://dl.bintray.com/getinsomnia/Insomnia /" | sudo tee /etc/apt/sources.list.d/insomnia.list > /dev/null
-    
+
     # Update package list
     echo "Updating package list..."
     sudo apt-get update -y
-    
+
     # Install Insomnia
     echo "Installing Insomnia..."
     sudo apt-get install -y insomnia
-    
+
     # Verify installation
     if command -v insomnia &> /dev/null; then
         echo "✓ Insomnia installed successfully"
@@ -71,7 +71,6 @@ else
 fi
 
 echo "=============================================="
-echo "============== [17] DONE ===================="
+echo "============== [16] DONE ===================="
 echo "=============================================="
 echo "▶ Next, run: bash 17-install-heidisql.sh"
-

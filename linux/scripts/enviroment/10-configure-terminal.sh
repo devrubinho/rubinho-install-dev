@@ -8,7 +8,7 @@ if [ -z "$INSTALL_ALL_RUNNING" ]; then
     SCRIPT_NAME=$(basename "$0")
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     INSTALL_SCRIPT="$SCRIPT_DIR/00-install-all.sh"
-    
+
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "⚠️  This script should not be executed directly"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -29,7 +29,7 @@ fi
 set -e
 
 echo "=============================================="
-echo "========= [11] CONFIGURING TERMINAL ========="
+echo "========= [10] CONFIGURING TERMINAL ========="
 echo "=============================================="
 
 # Check if running in GNOME
@@ -97,7 +97,6 @@ gsettings set org.gnome.Terminal.ProfilesList list "['$NEW_PROFILE_ID']"
 echo "Profile successfully applied."
 
 echo "=============================================="
-echo "============== [11] DONE ===================="
+echo "============== [10] DONE ===================="
 echo "=============================================="
 echo "▶ Next, run: bash 11-configure-ssh.sh"
-

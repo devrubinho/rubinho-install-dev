@@ -8,7 +8,7 @@ if [ -z "$INSTALL_ALL_RUNNING" ]; then
     SCRIPT_NAME=$(basename "$0")
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     INSTALL_SCRIPT="$SCRIPT_DIR/00-install-all.sh"
-    
+
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "⚠️  This script should not be executed directly"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -45,28 +45,25 @@ if [ ! -d "$CURSOR_MCP_DIR" ]; then
 fi
 
 # ────────────────────────────────
-# Install Task Master via One-Click
+# Install Task Master Automatically
 # ────────────────────────────────
 
 echo ""
 echo "📦 Installing Task Master MCP Server..."
-echo ""
-echo "⚠️  IMPORTANT: This will open Task Master installation page"
-echo "   Follow the one-click installation in Cursor"
-echo ""
-echo "Opening: https://www.task-master.dev/"
-echo ""
 
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    open "https://www.task-master.dev/"
-elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    xdg-open "https://www.task-master.dev/" 2>/dev/null || \
-    sensible-browser "https://www.task-master.dev/" 2>/dev/null || \
-    echo "Please open: https://www.task-master.dev/"
+# Load NVM if available
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || true
+
+# Verify Node.js is available
+if ! command -v node &> /dev/null && ! command -v npm &> /dev/null; then
+    echo "⚠️  Node.js/npm not found. Task Master will be installed when Node.js is available."
+    echo "   The MCP configuration will be created, but you'll need Node.js to use it."
+else
+    echo "→ Installing Task Master globally..."
+    npm install -g task-master-ai
+    echo "✓ Task Master installed globally"
 fi
-
-echo ""
-read -p "Press Enter after completing the one-click installation in Cursor..."
 
 # ────────────────────────────────
 # Create/Update MCP Configuration
@@ -81,51 +78,7 @@ if [ -f "$MCP_CONFIG_FILE" ]; then
 fi
 
 # ────────────────────────────────
-# Load API Keys from .env if available
-# ────────────────────────────────
-
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/../../../../.." && pwd)"
-ENV_FILE="$PROJECT_ROOT/.env"
-
-ANTHROPIC_KEY=""
-PERPLEXITY_KEY=""
-OPENAI_KEY=""
-GOOGLE_KEY=""
-
-if [ -f "$ENV_FILE" ]; then
-    echo "→ Loading API keys from .env file..."
-    
-    # Read API keys from .env (ignoring comments and empty lines)
-    while IFS= read -r line || [ -n "$line" ]; do
-        # Skip comments and empty lines
-        [[ "$line" =~ ^[[:space:]]*# ]] && continue
-        [[ -z "${line// }" ]] && continue
-        
-        # Extract key-value pairs
-        if [[ "$line" =~ ^[[:space:]]*ANTHROPIC_API_KEY[[:space:]]*=[[:space:]]*(.+)$ ]]; then
-            ANTHROPIC_KEY="${BASH_REMATCH[1]}"
-        elif [[ "$line" =~ ^[[:space:]]*PERPLEXITY_API_KEY[[:space:]]*=[[:space:]]*(.+)$ ]]; then
-            PERPLEXITY_KEY="${BASH_REMATCH[1]}"
-        elif [[ "$line" =~ ^[[:space:]]*OPENAI_API_KEY[[:space:]]*=[[:space:]]*(.+)$ ]]; then
-            OPENAI_KEY="${BASH_REMATCH[1]}"
-        elif [[ "$line" =~ ^[[:space:]]*GOOGLE_API_KEY[[:space:]]*=[[:space:]]*(.+)$ ]]; then
-            GOOGLE_KEY="${BASH_REMATCH[1]}"
-        fi
-    done < "$ENV_FILE"
-    
-    if [ -n "$ANTHROPIC_KEY" ] || [ -n "$PERPLEXITY_KEY" ] || [ -n "$OPENAI_KEY" ] || [ -n "$GOOGLE_KEY" ]; then
-        echo "✓ Found API keys in .env file"
-    else
-        echo "⚠️  No API keys found in .env file"
-    fi
-else
-    echo "⚠️  .env file not found at: $ENV_FILE"
-    echo "   API keys will need to be added manually to mcp.json"
-fi
-
-# ────────────────────────────────
-# Create MCP Config with API Keys
+# Create MCP Config
 # ────────────────────────────────
 
 # Use jq if available, otherwise use sed/awk
@@ -135,14 +88,7 @@ if command -v jq &> /dev/null; then
 {
   "mcpServers": {
     "taskmaster-ai": {
-      "command": "npx",
-      "args": ["-y", "task-master-ai"],
-      "env": {
-        "ANTHROPIC_API_KEY": "$ANTHROPIC_KEY",
-        "PERPLEXITY_API_KEY": "$PERPLEXITY_KEY",
-        "OPENAI_API_KEY": "$OPENAI_KEY",
-        "GOOGLE_API_KEY": "$GOOGLE_KEY"
-      }
+      "command": "task-master-ai"
     }
   }
 }
@@ -153,14 +99,7 @@ else
 {
   "mcpServers": {
     "taskmaster-ai": {
-      "command": "npx",
-      "args": ["-y", "task-master-ai"],
-      "env": {
-        "ANTHROPIC_API_KEY": "$ANTHROPIC_KEY",
-        "PERPLEXITY_API_KEY": "$PERPLEXITY_KEY",
-        "OPENAI_API_KEY": "$OPENAI_KEY",
-        "GOOGLE_API_KEY": "$GOOGLE_KEY"
-      }
+      "command": "task-master-ai"
     }
   }
 }
@@ -168,31 +107,6 @@ EOF
 fi
 
 echo "→ Created/updated mcp.json at: $MCP_CONFIG_FILE"
-
-if [ -n "$ANTHROPIC_KEY" ]; then
-    echo "  ✓ ANTHROPIC_API_KEY: configured"
-else
-    echo "  ⚠️  ANTHROPIC_API_KEY: not set (required for Claude)"
-fi
-
-if [ -n "$PERPLEXITY_KEY" ]; then
-    echo "  ✓ PERPLEXITY_API_KEY: configured"
-else
-    echo "  ⚠️  PERPLEXITY_API_KEY: not set (optional, for research)"
-fi
-
-if [ -n "$OPENAI_KEY" ]; then
-    echo "  ✓ OPENAI_API_KEY: configured"
-else
-    echo "  ⚠️  OPENAI_API_KEY: not set (optional)"
-fi
-
-if [ -n "$GOOGLE_KEY" ]; then
-    echo "  ✓ GOOGLE_API_KEY: configured"
-else
-    echo "  ⚠️  GOOGLE_API_KEY: not set (optional)"
-fi
-
 echo ""
 
 # ────────────────────────────────
@@ -203,21 +117,12 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "📋 Next Steps:"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
-echo "1. ✅ Complete one-click installation in Cursor (if not done)"
-echo ""
-echo "2. 🔑 Add your API keys to: $MCP_CONFIG_FILE"
-echo "   Edit the file and add your keys:"
-echo "   - ANTHROPIC_API_KEY (required for Claude)"
-echo "   - PERPLEXITY_API_KEY (optional, for search)"
-echo "   - OPENAI_API_KEY (optional)"
-echo "   - GOOGLE_API_KEY (optional)"
-echo ""
-echo "3. ⚙️  Enable Task Master in Cursor:"
+echo "1. ⚙️  Enable Task Master in Cursor:"
 echo "   - Open Cursor Settings (Ctrl+,)"
 echo "   - Go to 'MCP' tab"
 echo "   - Enable 'taskmaster-ai' toggle"
 echo ""
-echo "4. 🚀 Initialize Task Master in your project:"
+echo "2. 🚀 Initialize Task Master in your project:"
 echo "   - Open Cursor AI chat"
 echo "   - Type: 'Inicializar taskmaster-ai no meu projeto'"
 echo ""
@@ -231,5 +136,3 @@ echo "=============================================="
 echo "============== [13] DONE ===================="
 echo "=============================================="
 echo "▶ Next, run: bash 14-configure-cursor.sh"
-
-

@@ -8,7 +8,7 @@ if [ -z "$INSTALL_ALL_RUNNING" ]; then
     SCRIPT_NAME=$(basename "$0")
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     INSTALL_SCRIPT="$SCRIPT_DIR/00-install-all.sh"
-    
+
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "⚠️  This script should not be executed directly"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -29,7 +29,7 @@ fi
 set -e
 
 echo "=============================================="
-echo "========= [23] INSTALLING TABLEPLUS =========="
+echo "========= [15] INSTALLING TABLEPLUS =========="
 echo "=============================================="
 echo ""
 echo "TablePlus is a modern database client for macOS"
@@ -49,7 +49,7 @@ if brew list --cask tableplus &> /dev/null 2>&1; then
 else
     echo "Installing TablePlus via Homebrew..."
     brew install --cask tableplus
-    
+
     # Verify installation
     if [ -d "/Applications/TablePlus.app" ]; then
         echo "✓ TablePlus installed successfully"
@@ -59,7 +59,7 @@ else
 fi
 
 echo "=============================================="
-echo "============== [17] DONE ===================="
+echo "============== [15] DONE ===================="
 echo "=============================================="
 echo ""
 echo "📝 TablePlus is a modern database client that supports:"
@@ -68,4 +68,3 @@ echo "   - Native macOS app with beautiful interface"
 echo "   - Similar functionality to HeidiSQL"
 echo ""
 echo "🎉 All development tools installation complete!"
-
