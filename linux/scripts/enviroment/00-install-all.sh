@@ -116,56 +116,34 @@ check_and_confirm_installation() {
     local version_command="${3:-}"
     local skip_if_installed="${4:-false}"
 
-    local is_installed=false
-    local version="unknown"
-
-    # Check if tool is installed
-    if eval "$check_command" &>/dev/null; then
-        is_installed=true
-
-        # Try to get version if version command provided
-        if [ -n "$version_command" ]; then
-            version=$(eval "$version_command" 2>/dev/null | head -1 | tr -d '\n' || echo "unknown")
-        fi
-    fi
-
-    # If not installed, proceed with installation
-    if [ "$is_installed" = false ]; then
-        return 0
-    fi
-
     # If skip_if_installed is true, skip without asking
     if [ "$skip_if_installed" = true ]; then
-        echo "✓ $tool_name is already installed (version: $version). Skipping..."
-        log_info "$tool_name already installed (version: $version), skipped"
+        echo "Skipping $tool_name installation..."
+        log_info "$tool_name installation skipped"
         return 1
     fi
 
-    # In force mode, always reinstall
+    # In force mode, always install
     if [ "${FORCE_MODE:-false}" = "true" ]; then
-        echo "Force mode: $tool_name will be reinstalled (current version: $version)"
-        log_info "Force mode: $tool_name will be reinstalled (version: $version)"
+        echo "Force mode: $tool_name will be installed"
+        log_info "Force mode: $tool_name will be installed"
         return 0
     fi
 
-    # Prompt user for reinstall
+    # Prompt user for installation
     echo ""
-    echo "✓ $tool_name is already installed"
-    if [ "$version" != "unknown" ]; then
-        echo "  Version: $version"
-    fi
-    read -p "  Deseja reinstalar? [y/N]: " -n 1 -r
+    read -p "Deseja instalar $tool_name? [Y/n]: " -n 1 -r
     echo ""
 
-    # Check response (default to no)
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo "  Pulando reinstalação de $tool_name..."
-        log_info "$tool_name reinstall skipped by user (version: $version)"
+    # Check response (default to yes)
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        echo "  Pulando instalação de $tool_name..."
+        log_info "$tool_name installation skipped by user"
         return 1
     fi
 
-    echo "  Reinstalando $tool_name..."
-    log_info "$tool_name reinstall confirmed by user (version: $version)"
+    echo "  Instalando $tool_name..."
+    log_info "$tool_name installation confirmed by user"
     return 0
 }
 
@@ -196,11 +174,8 @@ echo "=============================================="
 echo "PHASE 1: Initial Setup"
 echo "=============================================="
 
-# Git configuration doesn't need installation check (it's just configuration)
-echo ""
-echo "Running script 01: configure-git.sh"
-echo "=============================================="
-bash "$SCRIPT_DIR/01-configure-git.sh"
+# Git configuration
+run_script_with_check "01-configure-git.sh" "Git Configuration" "true" "" "false"
 
 # Zsh installation check
 run_script_with_check "02-install-zsh.sh" "Zsh" "command -v zsh" "zsh --version 2>&1 | head -1"
@@ -243,18 +218,12 @@ run_script_with_check "05-install-node-nvm.sh" "Node.js" "command -v node" "node
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || true
 run_script_with_check "06-install-yarn.sh" "Yarn" "command -v yarn" "yarn --version 2>&1 | head -1"
 
-# Tools installation (no specific check, just run)
-echo ""
-echo "Running: 07-install-tools.sh"
-echo "=============================================="
+# Tools installation
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || true
-bash "$SCRIPT_DIR/07-install-tools.sh"
+run_script_with_check "07-install-tools.sh" "Development Tools" "true" "" "false"
 
-# Font installation (no check needed)
-echo ""
-echo "Running: 08-install-font-jetbrains.sh"
-echo "=============================================="
-bash "$SCRIPT_DIR/08-install-font-jetbrains.sh"
+# Font installation
+run_script_with_check "08-install-font-jetbrains.sh" "JetBrains Font" "true" "" "false"
 
 echo ""
 echo "=============================================="
@@ -269,46 +238,28 @@ run_script_with_check "09-install-cursor.sh" "Cursor" "command -v cursor" "curso
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || true
 run_script_with_check "10-install-claude.sh" "Claude Code CLI" "command -v claude || npm list -g @anthropic-ai/claude-code &>/dev/null" "claude --version 2>&1 | head -1 || npm list -g @anthropic-ai/claude-code 2>&1 | grep claude-code | head -1"
 
-# Configuration scripts (no installation checks needed)
-echo ""
-echo "Running: 10-configure-terminal.sh"
-echo "=============================================="
-bash "$SCRIPT_DIR/10-configure-terminal.sh"
+# Configuration scripts
+run_script_with_check "11-configure-terminal.sh" "Terminal Configuration" "true" "" "false"
 
-echo ""
-echo "Running: 11-configure-ssh.sh"
-echo "=============================================="
-bash "$SCRIPT_DIR/11-configure-ssh.sh"
+run_script_with_check "12-configure-ssh.sh" "SSH Configuration" "true" "" "false"
 
-echo ""
-echo "Running: 12-configure-inotify.sh"
-echo "=============================================="
-bash "$SCRIPT_DIR/12-configure-inotify.sh"
-
-# Cursor extensions (disabled - install manually)
-# echo ""
-# echo "Running: 13-install-cursor-extensions.sh"
-# echo "=============================================="
-# bash "$SCRIPT_DIR/13-install-cursor-extensions.sh"
+run_script_with_check "13-configure-inotify.sh" "Inotify Configuration" "true" "" "false"
 
 # Task Master check
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || true
-run_script_with_check "13-install-task-master.sh" "Task Master" "command -v task-master-ai" "task-master-ai --version 2>&1 | head -1"
+run_script_with_check "14-install-task-master.sh" "Task Master" "command -v task-master-ai" "task-master-ai --version 2>&1 | head -1"
 
-# Cursor configuration (no check needed)
-echo ""
-echo "Running: 14-configure-cursor.sh"
-echo "=============================================="
-bash "$SCRIPT_DIR/14-configure-cursor.sh"
+# Cursor configuration
+run_script_with_check "15-configure-cursor.sh" "Cursor Configuration" "true" "" "false"
 
 # Docker check
-run_script_with_check "15-install-docker.sh" "Docker" "command -v docker" "docker --version 2>&1 | head -1"
+run_script_with_check "16-install-docker.sh" "Docker" "command -v docker" "docker --version 2>&1 | head -1"
 
 # Insomnia check
-run_script_with_check "16-install-insomnia.sh" "Insomnia" "command -v insomnia" "insomnia --version 2>&1 | head -1"
+run_script_with_check "17-install-insomnia.sh" "Insomnia" "command -v insomnia" "insomnia --version 2>&1 | head -1"
 
 # TablePlus check (Linux only)
-run_script_with_check "17-install-tableplus.sh" "TablePlus" "command -v tableplus || [ -f $HOME/.local/bin/tableplus ]" "tableplus --version 2>&1 | head -1 || echo 'TablePlus AppImage'"
+run_script_with_check "18-install-tableplus.sh" "TablePlus" "command -v tableplus || [ -f $HOME/.local/bin/tableplus ]" "tableplus --version 2>&1 | head -1 || echo 'TablePlus AppImage'"
 
 echo ""
 echo "=============================================="

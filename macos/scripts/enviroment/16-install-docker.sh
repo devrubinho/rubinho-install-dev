@@ -29,36 +29,43 @@ fi
 set -e
 
 echo "=============================================="
-echo "========= [09] CONFIGURING FILE WATCHERS ====="
+echo "========= [16] INSTALLING DOCKER ============="
 echo "=============================================="
 
-echo "Configuring file watcher limits for macOS..."
-echo ""
-echo "⚠️  macOS uses different file watching mechanisms than Linux"
-echo "   (kqueue instead of inotify)"
-echo ""
-
-# Increase file descriptor limits
-echo "Setting file descriptor limits..."
-ulimit -n 65536
-
-# Make it persistent by adding to .zshrc
-if ! grep -q "ulimit -n 65536" ~/.zshrc; then
-  echo "" >> ~/.zshrc
-  echo "# Increase file descriptor limit for file watchers" >> ~/.zshrc
-  echo "ulimit -n 65536" >> ~/.zshrc
-  echo "✓ Added ulimit to .zshrc"
+# Check if Homebrew is installed
+if ! command -v brew &> /dev/null; then
+  echo "❌ Homebrew is required. Please install it first."
+  exit 1
 fi
 
-# For Node.js projects, you might want to set CHOKIDAR_USEPOLLING
-echo ""
-echo "Note: For some Node.js projects, you may need to set:"
-echo "  export CHOKIDAR_USEPOLLING=true"
-echo ""
-echo "Or add it to your .zshrc if you experience file watching issues"
+echo "Installing Docker Desktop via Homebrew..."
+# Reinstall if already installed
+if brew list --cask docker &> /dev/null; then
+  echo "Reinstalling Docker Desktop..."
+  brew reinstall --cask docker
+else
+  brew install --cask docker
+fi
+echo "✓ Docker Desktop installed"
+
+echo "Starting Docker Desktop..."
+open -a Docker
+
+echo "Waiting for Docker to start..."
+sleep 5
+
+echo "Testing Docker..."
+if docker ps &> /dev/null; then
+  echo "✓ Docker is running"
+  docker run hello-world || true
+else
+  echo "⚠️  Docker Desktop is starting. Please wait for it to fully start."
+  echo "   You can check the status in the Docker Desktop app."
+fi
 
 echo "=============================================="
-echo "============== [09] DONE ===================="
+echo "============== [16] DONE ===================="
 echo "=============================================="
-echo "▶ Next, run: bash 12-install-task-master.sh"
-echo "   (Note: Extensions should be installed manually)"
+echo "⚠️  Make sure Docker Desktop is running"
+echo ""
+echo "▶ Next, run: bash 17-install-insomnia.sh"

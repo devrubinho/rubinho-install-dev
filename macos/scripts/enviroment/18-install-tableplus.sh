@@ -29,48 +29,42 @@ fi
 set -e
 
 echo "=============================================="
-echo "===== [13] INSTALLING TASK MASTER ==========="
+echo "========= [18] INSTALLING TABLEPLUS =========="
 echo "=============================================="
+echo ""
+echo "TablePlus is a modern database client for macOS"
+echo ""
 
-# Load NVM if available
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || true
-
-# Check if Node.js/npm is available
-if ! command -v npm &> /dev/null; then
-    echo "⚠️  npm not found. Task Master requires Node.js/npm."
-    echo "   Please install Node.js first (script 05-install-node-nvm.sh)"
-    echo "   Task Master will be installed when Node.js is available."
-    exit 0
+# Check if Homebrew is installed
+if ! command -v brew &> /dev/null; then
+  echo "❌ Homebrew is required. Please install it first."
+  exit 1
 fi
 
-echo "Installing Task Master globally..."
+echo "Installing TablePlus via Homebrew..."
 
-# Check if already installed
-if command -v task-master-ai &> /dev/null; then
-    VERSION=$(task-master-ai --version 2>/dev/null || echo "unknown")
-    echo "✓ Task Master is already installed"
-    echo "  Version: $VERSION"
+# Reinstall if already installed
+if brew list --cask tableplus &> /dev/null 2>&1; then
+    echo "Reinstalling TablePlus..."
+    brew reinstall --cask tableplus
 else
-    echo "→ Installing task-master-ai..."
-    if npm install -g task-master-ai; then
-        echo "✓ Task Master installed successfully"
+    brew install --cask tableplus
+fi
 
-        # Verify installation
-        if command -v task-master-ai &> /dev/null; then
-            echo "✓ Task Master command is available"
-            task-master-ai --version 2>/dev/null || echo "⚠️  Version check failed, but Task Master is installed"
-        else
-            echo "⚠️  Task Master command not found in PATH"
-            echo "   You may need to restart your terminal or add npm global bin to PATH"
-        fi
-    else
-        echo "❌ Failed to install Task Master"
-        exit 1
-    fi
+# Verify installation
+if [ -d "/Applications/TablePlus.app" ]; then
+    echo "✓ TablePlus installed successfully"
+else
+    echo "⚠️  TablePlus installation may have failed"
 fi
 
 echo "=============================================="
-echo "============== [13] DONE ===================="
+echo "============== [18] DONE ===================="
 echo "=============================================="
-echo "▶ Next, run: bash 14-configure-cursor.sh"
+echo ""
+echo "📝 TablePlus is a modern database client that supports:"
+echo "   - MySQL, PostgreSQL, SQLite, Redis, and many more"
+echo "   - Native macOS app with beautiful interface"
+echo "   - Cross-platform support"
+echo ""
+echo "🎉 All development tools installation complete!"

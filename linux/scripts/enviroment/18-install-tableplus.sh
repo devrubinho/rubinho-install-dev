@@ -92,52 +92,51 @@ EOF
 }
 
 echo "=============================================="
-echo "========= [17] INSTALLING TABLEPLUS =========="
+echo "========= [18] INSTALLING TABLEPLUS =========="
 echo "=============================================="
 
-# Check if TablePlus is already installed
-if command -v tableplus &> /dev/null || [ -f /usr/bin/tableplus ] || [ -f "$HOME/.local/bin/tableplus" ]; then
-    echo "✓ TablePlus is already installed"
-    echo "Skipping installation..."
-else
-    echo "Installing TablePlus for Linux..."
+echo "Installing TablePlus for Linux..."
+echo ""
+
+# Detect architecture
+ARCH=$(uname -m)
+if [ "$ARCH" = "x86_64" ]; then
+    echo "Detected architecture: x86_64"
     echo ""
 
-    # Detect architecture
-    ARCH=$(uname -m)
-    if [ "$ARCH" = "x86_64" ]; then
-        echo "Detected architecture: x86_64"
+    # Try installing via snap first (easiest method)
+    if command -v snap &> /dev/null; then
+        echo "📥 Installing TablePlus via Snap..."
         echo ""
-
-        # Try installing via snap first (easiest method)
-        if command -v snap &> /dev/null; then
-            echo "📥 Installing TablePlus via Snap..."
+        # Remove if already installed, then reinstall
+        if sudo snap list tableplus &> /dev/null; then
+            echo "Reinstalling TablePlus..."
+            sudo snap remove tableplus || true
+        fi
+        if sudo snap install tableplus; then
+            echo "✓ TablePlus installed successfully via Snap"
             echo ""
-            if sudo snap install tableplus; then
-                echo "✓ TablePlus installed successfully via Snap"
-                echo ""
-                echo "📝 TablePlus is now available. Run it with: tableplus"
-            else
-                echo "⚠️  Snap installation failed, trying alternative method..."
-                install_tableplus_appimage
-            fi
+            echo "📝 TablePlus is now available. Run it with: tableplus"
         else
-            echo "📥 Snap not available, installing TablePlus via AppImage..."
-            echo ""
+            echo "⚠️  Snap installation failed, trying alternative method..."
             install_tableplus_appimage
         fi
     else
-        echo "❌ Unsupported architecture: $ARCH"
-        echo "   TablePlus Linux version is currently only available for x86_64"
+        echo "📥 Snap not available, installing TablePlus via AppImage..."
         echo ""
-        echo "You can try installing manually from:"
-        echo "  https://tableplus.com/download"
-        exit 1
+        install_tableplus_appimage
     fi
+else
+    echo "❌ Unsupported architecture: $ARCH"
+    echo "   TablePlus Linux version is currently only available for x86_64"
+    echo ""
+    echo "You can try installing manually from:"
+    echo "  https://tableplus.com/download"
+    exit 1
 fi
 
 echo "=============================================="
-echo "============== [17] DONE ===================="
+echo "============== [18] DONE ===================="
 echo "=============================================="
 echo ""
 echo "📝 TablePlus is a modern database management tool for:"

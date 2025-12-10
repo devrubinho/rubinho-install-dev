@@ -8,7 +8,7 @@ if [ -z "$INSTALL_ALL_RUNNING" ]; then
     SCRIPT_NAME=$(basename "$0")
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     INSTALL_SCRIPT="$SCRIPT_DIR/00-install-all.sh"
-    
+
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "⚠️  This script should not be executed directly"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -29,64 +29,37 @@ fi
 set -e
 
 echo "=============================================="
-echo "========= [12] INSTALLING CURSOR EXTENSIONS ==="
+echo "========= [12] CONFIGURING SSH =============="
 echo "=============================================="
 
-# Find the correct cursor executable
-CURSOR_CMD=""
-if command -v cursor &> /dev/null; then
-  # Check if the cursor command is actually executable
-  if cursor --version &> /dev/null; then
-    CURSOR_CMD="cursor"
-  fi
+# Validate email from .env
+if [ -z "$GIT_USER_EMAIL" ]; then
+    echo "❌ GIT_USER_EMAIL is required in .env file"
+    exit 1
 fi
 
-# Try alternative paths if cursor command doesn't work
-if [ -z "$CURSOR_CMD" ]; then
-  if [ -f "/Applications/Cursor.app/Contents/Resources/app/bin/cursor" ] && \
-     /Applications/Cursor.app/Contents/Resources/app/bin/cursor --version &> /dev/null; then
-    CURSOR_CMD="/Applications/Cursor.app/Contents/Resources/app/bin/cursor"
-  elif [ -f "/Applications/Cursor.app/Contents/MacOS/Cursor" ] && \
-       /Applications/Cursor.app/Contents/MacOS/Cursor --version &> /dev/null; then
-    CURSOR_CMD="/Applications/Cursor.app/Contents/MacOS/Cursor"
-  fi
+echo "Generating SSH key with email: $GIT_USER_EMAIL"
+if [ ! -f ~/.ssh/id_ed25519 ]; then
+  ssh-keygen -t ed25519 -C "$GIT_USER_EMAIL" -f ~/.ssh/id_ed25519 -N ""
+else
+  echo "SSH key already exists."
 fi
 
-if [ -z "$CURSOR_CMD" ]; then
-  echo "❌ Cursor is not installed or not found"
-  echo "   Please install Cursor manually from: https://cursor.sh"
-  exit 1
-fi
+echo "Starting SSH agent..."
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
 
-echo "Using Cursor: $CURSOR_CMD"
-$CURSOR_CMD --version 2>/dev/null || echo "⚠️  Version check failed, but continuing..."
+echo "Setting correct permissions..."
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/id_ed25519
+chmod 644 ~/.ssh/id_ed25519.pub
 
-echo ""
-EXTS=(
-  "naumovs.color-highlight"
-  "mikestead.dotenv"
-  "dbaeumer.vscode-eslint"
-  "eamodio.gitlens"
-  "shd101wyy.markdown-preview-enhanced"
-  "Prisma.prisma"
-  "sainoba.px-to-rem"
-  "natqe.reload"
-  "bradlc.vscode-tailwindcss"
-  "oderwat.indent-rainbow"
-  "castrogusttavo.symbols"
-  "catppuccin.catppuccin-vsc"
-)
-
-for ext in "${EXTS[@]}"; do
-  echo "→ Installing: $ext"
-  $CURSOR_CMD --install-extension "$ext" 2>&1 | grep -v "XML\|Error\|Access" || echo "⚠ Failed to install $ext (ignoring)"
-done
-
-echo ""
-echo "All extensions attempted."
+echo "Copying public key to clipboard..."
+cat ~/.ssh/id_ed25519.pub | pbcopy
 
 echo "=============================================="
 echo "============== [12] DONE ===================="
 echo "=============================================="
-echo "▶ Next, run: bash 12-configure-cursor.sh"
-
+echo "✅ SSH public key copied to clipboard!"
+echo "   Go to GitHub/GitLab Settings → SSH Keys and paste it."
+echo "▶ Next, run: bash 13-configure-file-watchers.sh"

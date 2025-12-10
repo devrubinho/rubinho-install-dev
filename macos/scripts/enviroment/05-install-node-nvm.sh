@@ -8,7 +8,7 @@ if [ -z "$INSTALL_ALL_RUNNING" ]; then
     SCRIPT_NAME=$(basename "$0")
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     INSTALL_SCRIPT="$SCRIPT_DIR/00-install-all.sh"
-    
+
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "⚠️  This script should not be executed directly"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -34,12 +34,10 @@ echo "=============================================="
 
 export NVM_DIR="$HOME/.nvm"
 
-if [ ! -d "$NVM_DIR" ]; then
-  echo "Installing NVM..."
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-else
-  echo "NVM already installed."
-fi
+echo "Installing NVM..."
+# Remove existing installation if it exists
+[ -d "$NVM_DIR" ] && rm -rf "$NVM_DIR"
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 
 # Load NVM
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
@@ -49,22 +47,22 @@ echo "Installing Node 22..."
 if [ -s "$NVM_DIR/nvm.sh" ]; then
   # Source NVM again to ensure it's loaded
   source "$NVM_DIR/nvm.sh"
-  
-  # Install Node 22
-  nvm install 22 || {
+
+  # Install Node 22 (reinstall if already exists)
+  nvm install 22 --reinstall-packages-from=22 || nvm install 22 || {
     echo "⚠️  Failed to install Node 22. Trying to continue..."
     exit 1
   }
-  
+
   # Set as default and use it
   nvm alias default 22
   nvm use 22
-  
+
   # Verify installation
   if command -v node &> /dev/null; then
     echo "✓ Node  -> $(node -v)"
     echo "✓ NPM   -> $(npm -v)"
-else
+  else
     echo "⚠️  Node installed but not in PATH. Please restart terminal."
   fi
 else
@@ -76,4 +74,3 @@ echo "=============================================="
 echo "============== [05] DONE ===================="
 echo "=============================================="
 echo "▶ Next, run: bash 06-install-yarn.sh"
-

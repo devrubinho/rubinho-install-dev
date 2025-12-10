@@ -29,41 +29,41 @@ fi
 set -e
 
 echo "=============================================="
-echo "========= [12] INSTALLING DOCKER ============="
+echo "========= [12] CONFIGURING SSH =============="
 echo "=============================================="
 
-# Check if Homebrew is installed
-if ! command -v brew &> /dev/null; then
-  echo "❌ Homebrew is required. Please install it first."
-  exit 1
+echo "Installing OpenSSH and xclip..."
+sudo apt update -y
+sudo apt install -y openssh-client xclip
+
+# Validate email from .env
+if [ -z "$GIT_USER_EMAIL" ]; then
+    echo "❌ GIT_USER_EMAIL is required in .env file"
+    exit 1
 fi
 
-echo "Installing Docker Desktop via Homebrew..."
-if ! brew list --cask docker &> /dev/null; then
-  brew install --cask docker
-  echo "✓ Docker Desktop installed"
+echo "Generating SSH key with email: $GIT_USER_EMAIL"
+if [ ! -f ~/.ssh/id_ed25519 ]; then
+  ssh-keygen -t ed25519 -C "$GIT_USER_EMAIL" -f ~/.ssh/id_ed25519 -N ""
 else
-  echo "✓ Docker Desktop already installed"
+  echo "SSH key already exists."
 fi
 
-echo "Starting Docker Desktop..."
-open -a Docker
+echo "Starting SSH agent..."
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
 
-echo "Waiting for Docker to start..."
-sleep 5
+echo "Setting correct permissions..."
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/id_ed25519
+chmod 644 ~/.ssh/id_ed25519.pub
 
-echo "Testing Docker..."
-if docker ps &> /dev/null; then
-  echo "✓ Docker is running"
-  docker run hello-world || true
-else
-  echo "⚠️  Docker Desktop is starting. Please wait for it to fully start."
-  echo "   You can check the status in the Docker Desktop app."
-fi
+echo "Copying public key to clipboard..."
+cat ~/.ssh/id_ed25519.pub | xclip -sel clip
 
 echo "=============================================="
 echo "============== [12] DONE ===================="
 echo "=============================================="
-echo "⚠️  Make sure Docker Desktop is running"
-echo ""
-echo "▶ Next, run: bash 14-configure-terminal.sh (final step)"
+echo "✅ SSH public key copied to clipboard!"
+echo "   Go to GitHub/GitLab Settings → SSH Keys and paste it."
+echo "▶ Next, run: bash 13-configure-inotify.sh"

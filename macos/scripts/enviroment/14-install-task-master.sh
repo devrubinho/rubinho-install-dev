@@ -29,41 +29,49 @@ fi
 set -e
 
 echo "=============================================="
-echo "========= [15] INSTALLING TABLEPLUS =========="
+echo "===== [14] INSTALLING TASK MASTER ==========="
 echo "=============================================="
-echo ""
-echo "TablePlus is a modern database client for macOS"
-echo ""
 
-# Check if Homebrew is installed
-if ! command -v brew &> /dev/null; then
-  echo "❌ Homebrew is required. Please install it first."
-  exit 1
+# Load NVM if available
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || true
+
+# Check if Node.js/npm is available
+if ! command -v npm &> /dev/null; then
+    echo "⚠️  npm not found. Task Master requires Node.js/npm."
+    echo "   Please install Node.js first (script 05-install-node-nvm.sh)"
+    echo "   Task Master will be installed when Node.js is available."
+    exit 0
 fi
 
-# Check if TablePlus is already installed
-if brew list --cask tableplus &> /dev/null 2>&1; then
-    echo "✓ TablePlus is already installed"
-    echo "Skipping installation..."
+echo "Installing Task Master globally..."
+
+# Reinstall if already installed
+if npm list -g task-master-ai &> /dev/null; then
+    echo "→ Reinstalling task-master-ai..."
+    npm install -g task-master-ai --force
 else
-    echo "Installing TablePlus via Homebrew..."
-    brew install --cask tableplus
+    echo "→ Installing task-master-ai..."
+    npm install -g task-master-ai
+fi
+
+if npm list -g task-master-ai &> /dev/null; then
+    echo "✓ Task Master installed successfully"
 
     # Verify installation
-    if [ -d "/Applications/TablePlus.app" ]; then
-        echo "✓ TablePlus installed successfully"
+    if command -v task-master-ai &> /dev/null; then
+        echo "✓ Task Master command is available"
+        task-master-ai --version 2>/dev/null || echo "⚠️  Version check failed, but Task Master is installed"
     else
-        echo "⚠️  TablePlus installation may have failed"
+        echo "⚠️  Task Master command not found in PATH"
+        echo "   You may need to restart your terminal or add npm global bin to PATH"
     fi
+else
+    echo "❌ Failed to install Task Master"
+    exit 1
 fi
 
 echo "=============================================="
-echo "============== [15] DONE ===================="
+echo "============== [14] DONE ===================="
 echo "=============================================="
-echo ""
-echo "📝 TablePlus is a modern database client that supports:"
-echo "   - MySQL, PostgreSQL, SQLite, Redis, and many more"
-echo "   - Native macOS app with beautiful interface"
-echo "   - Cross-platform support"
-echo ""
-echo "🎉 All development tools installation complete!"
+echo "▶ Next, run: bash 15-configure-cursor.sh"

@@ -29,7 +29,7 @@ fi
 set -e
 
 echo "=============================================="
-echo "========= [10] CONFIGURING TERMINAL ========="
+echo "========= [11] CONFIGURING TERMINAL ========="
 echo "=============================================="
 
 # Check if running in GNOME
@@ -97,6 +97,6 @@ gsettings set org.gnome.Terminal.ProfilesList list "['$NEW_PROFILE_ID']"
 echo "Profile successfully applied."
 
 echo "=============================================="
-echo "============== [10] DONE ===================="
+echo "============== [11] DONE ===================="
 echo "=============================================="
-echo "▶ Next, run: bash 11-configure-ssh.sh"
+echo "▶ Next, run: bash 12-configure-ssh.sh"

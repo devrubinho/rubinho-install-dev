@@ -8,7 +8,7 @@ if [ -z "$INSTALL_ALL_RUNNING" ]; then
     SCRIPT_NAME=$(basename "$0")
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     INSTALL_SCRIPT="$SCRIPT_DIR/00-install-all.sh"
-    
+
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "⚠️  This script should not be executed directly"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -32,17 +32,14 @@ echo "========= [03] INSTALLING ZINIT ============="
 echo "=============================================="
 
 # Install Zinit (fast Zsh plugin manager)
-if [[ ! -d "$HOME/.zinit/bin" ]]; then
-  echo "Installing Zinit..."
-  mkdir -p "$HOME/.zinit/bin"
-  git clone https://github.com/zdharma-continuum/zinit.git "$HOME/.zinit/bin"
-  echo "✓ Zinit installed"
-else
-  echo "✓ Zinit already installed"
-fi
+echo "Installing Zinit..."
+mkdir -p "$HOME/.zinit/bin"
+# Remove existing installation if it exists
+[ -d "$HOME/.zinit/bin" ] && rm -rf "$HOME/.zinit/bin"
+git clone https://github.com/zdharma-continuum/zinit.git "$HOME/.zinit/bin"
+echo "✓ Zinit installed"
 
 echo "=============================================="
 echo "============== [03] DONE ===================="
 echo "=============================================="
 echo "▶ Next, run: bash 04-install-starship.sh"
-

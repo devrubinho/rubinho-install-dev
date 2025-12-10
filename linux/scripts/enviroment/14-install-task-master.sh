@@ -29,48 +29,49 @@ fi
 set -e
 
 echo "=============================================="
-echo "========= [11] CONFIGURING CURSOR ============"
+echo "===== [14] INSTALLING TASK MASTER ==========="
 echo "=============================================="
 
-# Determine Cursor user directory based on OS
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-  CURSOR_USER_DIR="$HOME/.config/Cursor/User"
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-  CURSOR_USER_DIR="$HOME/Library/Application Support/Cursor/User"
-else
-  echo "❌ Operating system not automatically supported."
-  exit 1
+# Load NVM if available
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || true
+
+# Check if Node.js/npm is available
+if ! command -v npm &> /dev/null; then
+    echo "⚠️  npm not found. Task Master requires Node.js/npm."
+    echo "   Please install Node.js first (script 05-install-node-nvm.sh)"
+    echo "   Task Master will be installed when Node.js is available."
+    exit 0
 fi
 
-mkdir -p "$CURSOR_USER_DIR"
+echo "Installing Task Master globally..."
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SETTINGS_PATH="$CURSOR_USER_DIR/settings.json"
-KEYBINDINGS_PATH="$CURSOR_USER_DIR/keybindings.json"
-TASKS_PATH="$CURSOR_USER_DIR/tasks.json"
-
-echo "Detected Cursor directory: $CURSOR_USER_DIR"
-echo ""
-
-echo "Copying settings.json..."
-cp "$SCRIPT_DIR/../../config/user-settings.json" "$SETTINGS_PATH"
-echo "→ settings.json updated successfully!"
-
-echo "Copying keybindings.json..."
-cp "$SCRIPT_DIR/../../config/cursor-keyboard.json" "$KEYBINDINGS_PATH"
-echo "→ keybindings.json updated successfully!"
-
-echo "Copying tasks.json..."
-if cp "$SCRIPT_DIR/../../config/tasks.json" "$TASKS_PATH" 2>/dev/null; then
-    echo "→ tasks.json updated successfully!"
+# Reinstall if already installed
+if npm list -g task-master-ai &> /dev/null; then
+    echo "→ Reinstalling task-master-ai..."
+    npm install -g task-master-ai --force
 else
-    echo "⚠️  tasks.json not found (optional file, skipping)"
+    echo "→ Installing task-master-ai..."
+    npm install -g task-master-ai
+fi
+
+if npm list -g task-master-ai &> /dev/null; then
+    echo "✓ Task Master installed successfully"
+
+    # Verify installation
+    if command -v task-master-ai &> /dev/null; then
+        echo "✓ Task Master command is available"
+        task-master-ai --version 2>/dev/null || echo "⚠️  Version check failed, but Task Master is installed"
+    else
+        echo "⚠️  Task Master command not found in PATH"
+        echo "   You may need to restart your terminal or add npm global bin to PATH"
+    fi
+else
+    echo "❌ Failed to install Task Master"
+    exit 1
 fi
 
 echo "=============================================="
-echo "============== [11] DONE ===================="
+echo "============== [14] DONE ===================="
 echo "=============================================="
-echo "🎉 Cursor configured successfully!"
-echo "   Open Cursor again to apply everything."
-echo ""
-echo "▶ Next, run: bash 13-install-docker.sh"
+echo "▶ Next, run: bash 15-configure-cursor.sh"

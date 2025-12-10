@@ -8,7 +8,7 @@ if [ -z "$INSTALL_ALL_RUNNING" ]; then
     SCRIPT_NAME=$(basename "$0")
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     INSTALL_SCRIPT="$SCRIPT_DIR/00-install-all.sh"
-    
+
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "⚠️  This script should not be executed directly"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -29,38 +29,47 @@ fi
 set -e
 
 echo "=============================================="
-echo "========= [10] CONFIGURING SSH =============="
+echo "========= [16] INSTALLING DOCKER ============="
 echo "=============================================="
 
-# Validate email from .env
-if [ -z "$GIT_USER_EMAIL" ]; then
-    echo "❌ GIT_USER_EMAIL is required in .env file"
-    exit 1
-fi
+echo "Updating system..."
+sudo apt update -y && sudo apt upgrade -y
 
-echo "Generating SSH key with email: $GIT_USER_EMAIL"
-if [ ! -f ~/.ssh/id_ed25519 ]; then
-  ssh-keygen -t ed25519 -C "$GIT_USER_EMAIL" -f ~/.ssh/id_ed25519 -N ""
-else
-  echo "SSH key already exists."
-fi
+echo "Removing old Docker installations..."
+sudo apt remove -y docker docker-engine docker.io containerd runc || true
 
-echo "Starting SSH agent..."
-eval "$(ssh-agent -s)"
-ssh-add ~/.ssh/id_ed25519
+echo "Installing required dependencies..."
+sudo apt install -y ca-certificates curl gnupg lsb-release
 
-echo "Setting correct permissions..."
-chmod 700 ~/.ssh
-chmod 600 ~/.ssh/id_ed25519
-chmod 644 ~/.ssh/id_ed25519.pub
+echo "Adding Docker GPG Key..."
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
-echo "Copying public key to clipboard..."
-cat ~/.ssh/id_ed25519.pub | pbcopy
+echo "Adding Docker Repository..."
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+  https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
+  | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt update -y
+
+echo "Installing Docker Engine..."
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+echo "Testing Docker..."
+sudo docker run hello-world || true
+
+echo "Adding current user to docker group..."
+sudo usermod -aG docker $USER
 
 echo "=============================================="
-echo "============== [10] DONE ===================="
+echo "============== [16] DONE ===================="
 echo "=============================================="
-echo "✅ SSH public key copied to clipboard!"
-echo "   Go to GitHub/GitLab Settings → SSH Keys and paste it."
-echo "▶ Next, run: bash 10-configure-file-watchers.sh"
-
+echo "⚠️  Logout/Login required to use Docker without sudo"
+echo ""
+echo "🎉 INSTALLATION COMPLETE!"
+echo "=============================================="
+echo "All scripts have been executed successfully!"
+echo "Restart the terminal to apply all changes."

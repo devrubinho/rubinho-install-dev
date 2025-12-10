@@ -29,47 +29,36 @@ fi
 set -e
 
 echo "=============================================="
-echo "========= [15] INSTALLING DOCKER ============="
+echo "========= [13] CONFIGURING FILE WATCHERS ====="
 echo "=============================================="
 
-echo "Updating system..."
-sudo apt update -y && sudo apt upgrade -y
-
-echo "Removing old Docker installations..."
-sudo apt remove -y docker docker-engine docker.io containerd runc || true
-
-echo "Installing required dependencies..."
-sudo apt install -y ca-certificates curl gnupg lsb-release
-
-echo "Adding Docker GPG Key..."
-sudo install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
-  sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-sudo chmod a+r /etc/apt/keyrings/docker.gpg
-
-echo "Adding Docker Repository..."
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
-  https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
-  | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-sudo apt update -y
-
-echo "Installing Docker Engine..."
-sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
-echo "Testing Docker..."
-sudo docker run hello-world || true
-
-echo "Adding current user to docker group..."
-sudo usermod -aG docker $USER
-
-echo "=============================================="
-echo "============== [15] DONE ===================="
-echo "=============================================="
-echo "⚠️  Logout/Login required to use Docker without sudo"
+echo "Configuring file watcher limits for macOS..."
 echo ""
-echo "🎉 INSTALLATION COMPLETE!"
+echo "⚠️  macOS uses different file watching mechanisms than Linux"
+echo "   (kqueue instead of inotify)"
+echo ""
+
+# Increase file descriptor limits
+echo "Setting file descriptor limits..."
+ulimit -n 65536
+
+# Make it persistent by adding to .zshrc
+if ! grep -q "ulimit -n 65536" ~/.zshrc; then
+  echo "" >> ~/.zshrc
+  echo "# Increase file descriptor limit for file watchers" >> ~/.zshrc
+  echo "ulimit -n 65536" >> ~/.zshrc
+  echo "✓ Added ulimit to .zshrc"
+fi
+
+# For Node.js projects, you might want to set CHOKIDAR_USEPOLLING
+echo ""
+echo "Note: For some Node.js projects, you may need to set:"
+echo "  export CHOKIDAR_USEPOLLING=true"
+echo ""
+echo "Or add it to your .zshrc if you experience file watching issues"
+
 echo "=============================================="
-echo "All scripts have been executed successfully!"
-echo "Restart the terminal to apply all changes."
+echo "============== [13] DONE ===================="
+echo "=============================================="
+echo "▶ Next, run: bash 14-install-task-master.sh"
+echo "   (Note: Extensions should be installed manually)"

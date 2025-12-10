@@ -8,7 +8,7 @@ if [ -z "$INSTALL_ALL_RUNNING" ]; then
     SCRIPT_NAME=$(basename "$0")
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     INSTALL_SCRIPT="$SCRIPT_DIR/00-install-all.sh"
-    
+
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "⚠️  This script should not be executed directly"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -29,65 +29,48 @@ fi
 set -e
 
 echo "=============================================="
-echo "========= [15] INSTALLING CURSOR EXTENSIONS ==="
+echo "========= [15] CONFIGURING CURSOR ============"
 echo "=============================================="
 
-# Find the correct cursor executable
-CURSOR_CMD=""
-if command -v cursor &> /dev/null; then
-  # Check if the cursor command is actually executable (not XML error)
-  if cursor --version &> /dev/null; then
-    CURSOR_CMD="cursor"
-  fi
-fi
-
-# Try alternative paths if cursor command doesn't work
-if [ -z "$CURSOR_CMD" ]; then
-  if [ -f "/usr/share/cursor/bin/cursor" ] && /usr/share/cursor/bin/cursor --version &> /dev/null; then
-    CURSOR_CMD="/usr/share/cursor/bin/cursor"
-  elif [ -f "/usr/share/cursor/cursor" ] && /usr/share/cursor/cursor --version &> /dev/null; then
-    CURSOR_CMD="/usr/share/cursor/cursor"
-  elif [ -f "/opt/cursor/cursor" ] && /opt/cursor/cursor --version &> /dev/null; then
-    CURSOR_CMD="/opt/cursor/cursor"
-  fi
-fi
-
-if [ -z "$CURSOR_CMD" ]; then
-  echo "❌ Cursor is not installed or not found"
-  echo "   Please install Cursor first by running: bash 09-install-cursor.sh"
-  echo "   Or install it manually from: https://cursor.sh"
+# Determine Cursor user directory based on OS
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  CURSOR_USER_DIR="$HOME/.config/Cursor/User"
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  CURSOR_USER_DIR="$HOME/Library/Application Support/Cursor/User"
+else
+  echo "❌ Operating system not automatically supported."
   exit 1
 fi
 
-echo "Using Cursor: $CURSOR_CMD"
-$CURSOR_CMD --version 2>/dev/null || echo "⚠️  Version check failed, but continuing..."
+mkdir -p "$CURSOR_USER_DIR"
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SETTINGS_PATH="$CURSOR_USER_DIR/settings.json"
+KEYBINDINGS_PATH="$CURSOR_USER_DIR/keybindings.json"
+TASKS_PATH="$CURSOR_USER_DIR/tasks.json"
+
+echo "Detected Cursor directory: $CURSOR_USER_DIR"
 echo ""
-EXTS=(
-  "naumovs.color-highlight"
-  "mikestead.dotenv"
-  "dbaeumer.vscode-eslint"
-  "eamodio.gitlens"
-  "shd101wyy.markdown-preview-enhanced"
-  "Prisma.prisma"
-  "sainoba.px-to-rem"
-  "natqe.reload"
-  "bradlc.vscode-tailwindcss"
-  "oderwat.indent-rainbow"
-  "castrogusttavo.symbols"
-  "catppuccin.catppuccin-vsc"
-)
 
-for ext in "${EXTS[@]}"; do
-  echo "→ Installing: $ext"
-  $CURSOR_CMD --install-extension "$ext" 2>&1 | grep -v "XML\|Error\|Access" || echo "⚠ Failed to install $ext (ignoring)"
-done
+echo "Copying settings.json..."
+cp "$SCRIPT_DIR/../../config/user-settings.json" "$SETTINGS_PATH"
+echo "→ settings.json updated successfully!"
 
-echo ""
-echo "All extensions attempted."
+echo "Copying keybindings.json..."
+cp "$SCRIPT_DIR/../../config/cursor-keyboard.json" "$KEYBINDINGS_PATH"
+echo "→ keybindings.json updated successfully!"
+
+echo "Copying tasks.json..."
+if cp "$SCRIPT_DIR/../../config/tasks.json" "$TASKS_PATH" 2>/dev/null; then
+    echo "→ tasks.json updated successfully!"
+else
+    echo "⚠️  tasks.json not found (optional file, skipping)"
+fi
 
 echo "=============================================="
 echo "============== [15] DONE ===================="
 echo "=============================================="
-echo "▶ Next, run: bash 14-configure-cursor.sh"
-
+echo "🎉 Cursor configured successfully!"
+echo "   Open Cursor again to apply everything."
+echo ""
+echo "▶ Next, run: bash 16-install-docker.sh"

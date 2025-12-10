@@ -46,31 +46,32 @@ fi
 
 echo "Installing Claude Code CLI via npm..."
 
-# Check if already installed
+# Reinstall if already installed
 if npm list -g @anthropic-ai/claude-code &> /dev/null; then
-    VERSION=$(npm list -g @anthropic-ai/claude-code 2>/dev/null | grep claude-code | head -1 || echo "unknown")
-    echo "✓ Claude Code CLI is already installed"
-    echo "  Version: $VERSION"
+    echo "→ Reinstalling @anthropic-ai/claude-code..."
+    npm install -g @anthropic-ai/claude-code --force
 else
     echo "→ Installing @anthropic-ai/claude-code..."
-    if npm install -g @anthropic-ai/claude-code; then
-        echo "✓ Claude Code CLI installed successfully"
+    npm install -g @anthropic-ai/claude-code
+fi
 
-        # Verify installation
-        if command -v claude &> /dev/null; then
-            echo "✓ Claude command is available"
-            claude --version 2>/dev/null || echo "⚠️  Version check failed, but Claude is installed"
-        else
-            echo "⚠️  Claude command not found in PATH"
-            echo "   You may need to restart your terminal or add npm global bin to PATH"
-        fi
+if npm list -g @anthropic-ai/claude-code &> /dev/null; then
+    echo "✓ Claude Code CLI installed successfully"
+
+    # Verify installation
+    if command -v claude &> /dev/null; then
+        echo "✓ Claude command is available"
+        claude --version 2>/dev/null || echo "⚠️  Version check failed, but Claude is installed"
     else
-        echo "❌ Failed to install Claude Code CLI"
-        exit 1
+        echo "⚠️  Claude command not found in PATH"
+        echo "   You may need to restart your terminal or add npm global bin to PATH"
     fi
+else
+    echo "❌ Failed to install Claude Code CLI"
+    exit 1
 fi
 
 echo "=============================================="
 echo "============== [10] DONE ===================="
 echo "=============================================="
-echo "▶ Next, run: bash 10-configure-file-watchers.sh"
+echo "▶ Next, run: bash 11-configure-terminal.sh"

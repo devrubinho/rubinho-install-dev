@@ -71,23 +71,15 @@ fi
 
 # If direct download failed, try alternative methods
 if [ "$INSTALLED" = false ]; then
-  echo "Trying alternative installation method..."
-
-  # Check if cursor is already installed
-  if command -v cursor &> /dev/null; then
-    echo "✓ Cursor is already installed"
-    INSTALLED=true
-  else
-    echo "⚠️  Automatic installation failed."
-    echo ""
-    echo "Please install Cursor manually:"
-    echo "  1. Visit: https://cursor.sh"
-    echo "  2. Click 'Download' and select Linux (.deb)"
-    echo "  3. Install with: sudo dpkg -i ~/Downloads/cursor*.deb"
-    echo ""
-    echo "Or try: sudo snap install cursor"
-    exit 0
-  fi
+  echo "⚠️  Automatic installation failed."
+  echo ""
+  echo "Please install Cursor manually:"
+  echo "  1. Visit: https://cursor.sh"
+  echo "  2. Click 'Download' and select Linux (.deb)"
+  echo "  3. Install with: sudo dpkg -i ~/Downloads/cursor*.deb"
+  echo ""
+  echo "Or try: sudo snap install cursor"
+  exit 1
 fi
 
 if [ "$INSTALLED" = true ]; then

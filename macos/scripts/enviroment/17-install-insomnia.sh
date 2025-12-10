@@ -29,48 +29,33 @@ fi
 set -e
 
 echo "=============================================="
-echo "========= [16] INSTALLING INSOMNIA ==========="
+echo "========= [17] INSTALLING INSOMNIA ==========="
 echo "=============================================="
 
-# Check if Insomnia is already installed
-if command -v insomnia &> /dev/null; then
-    echo "✓ Insomnia is already installed"
-    echo "Skipping installation..."
+# Check if Homebrew is installed
+if ! command -v brew &> /dev/null; then
+  echo "❌ Homebrew is required. Please install it first."
+  exit 1
+fi
+
+echo "Installing Insomnia via Homebrew..."
+
+# Reinstall if already installed
+if brew list --cask insomnia &> /dev/null 2>&1; then
+    echo "Reinstalling Insomnia..."
+    brew reinstall --cask insomnia
 else
-    echo "Installing Insomnia..."
+    brew install --cask insomnia
+fi
 
-    # Add Insomnia repository
-    echo "Adding Insomnia repository..."
-
-    # Create keyrings directory if it doesn't exist
-    sudo mkdir -p /etc/apt/keyrings
-
-    # Add GPG key (modern method)
-    echo "Adding GPG key..."
-    curl -fsSL https://insomnia.rest/keys/debian-public.key.asc | sudo gpg --dearmor -o /etc/apt/keyrings/insomnia.gpg
-    sudo chmod a+r /etc/apt/keyrings/insomnia.gpg
-
-    # Add repository with signed-by
-    echo "deb [signed-by=/etc/apt/keyrings/insomnia.gpg] https://dl.bintray.com/getinsomnia/Insomnia /" | sudo tee /etc/apt/sources.list.d/insomnia.list > /dev/null
-
-    # Update package list
-    echo "Updating package list..."
-    sudo apt-get update -y
-
-    # Install Insomnia
-    echo "Installing Insomnia..."
-    sudo apt-get install -y insomnia
-
-    # Verify installation
-    if command -v insomnia &> /dev/null; then
-        echo "✓ Insomnia installed successfully"
-    else
-        echo "⚠️  Insomnia installed but command not found in PATH"
-        echo "   Try restarting your terminal or launching from Applications menu"
-    fi
+# Verify installation
+if [ -d "/Applications/Insomnia.app" ]; then
+    echo "✓ Insomnia installed successfully"
+else
+    echo "⚠️  Insomnia installation may have failed"
 fi
 
 echo "=============================================="
-echo "============== [16] DONE ===================="
+echo "============== [17] DONE ===================="
 echo "=============================================="
-echo "▶ Next, run: bash 17-install-tableplus.sh"
+echo "▶ Next, run: bash 18-install-tableplus.sh"

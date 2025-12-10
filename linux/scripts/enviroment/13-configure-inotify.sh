@@ -29,48 +29,25 @@ fi
 set -e
 
 echo "=============================================="
-echo "========= [14] CONFIGURING CURSOR ============"
+echo "========= [13] CONFIGURING INOTIFY ==========="
 echo "=============================================="
 
-# Determine Cursor user directory based on OS
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-  CURSOR_USER_DIR="$HOME/.config/Cursor/User"
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-  CURSOR_USER_DIR="$HOME/Library/Application Support/Cursor/User"
-else
-  echo "❌ Operating system not automatically supported."
-  exit 1
+echo "Setting inotify max_user_watches..."
+sudo sysctl fs.inotify.max_user_watches=524288
+
+echo "Making inotify setting persistent..."
+if ! grep -q "fs.inotify.max_user_watches=524288" /etc/sysctl.conf; then
+  echo "fs.inotify.max_user_watches=524288" | sudo tee -a /etc/sysctl.conf
 fi
 
-mkdir -p "$CURSOR_USER_DIR"
+echo "Applying sysctl changes..."
+sudo sysctl -p
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SETTINGS_PATH="$CURSOR_USER_DIR/settings.json"
-KEYBINDINGS_PATH="$CURSOR_USER_DIR/keybindings.json"
-TASKS_PATH="$CURSOR_USER_DIR/tasks.json"
-
-echo "Detected Cursor directory: $CURSOR_USER_DIR"
-echo ""
-
-echo "Copying settings.json..."
-cp "$SCRIPT_DIR/../../config/user-settings.json" "$SETTINGS_PATH"
-echo "→ settings.json updated successfully!"
-
-echo "Copying keybindings.json..."
-cp "$SCRIPT_DIR/../../config/cursor-keyboard.json" "$KEYBINDINGS_PATH"
-echo "→ keybindings.json updated successfully!"
-
-echo "Copying tasks.json..."
-if cp "$SCRIPT_DIR/../../config/tasks.json" "$TASKS_PATH" 2>/dev/null; then
-    echo "→ tasks.json updated successfully!"
-else
-    echo "⚠️  tasks.json not found (optional file, skipping)"
-fi
+echo "Verifying setting..."
+cat /proc/sys/fs/inotify/max_user_watches
 
 echo "=============================================="
-echo "============== [14] DONE ===================="
+echo "============== [13] DONE ===================="
 echo "=============================================="
-echo "🎉 Cursor configured successfully!"
-echo "   Open Cursor again to apply everything."
-echo ""
-echo "▶ Next, run: bash 15-install-docker.sh"
+echo "▶ Next, run: bash 14-install-task-master.sh"
+echo "   (Note: Extensions should be installed manually)"

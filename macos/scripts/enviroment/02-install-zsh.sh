@@ -8,7 +8,7 @@ if [ -z "$INSTALL_ALL_RUNNING" ]; then
     SCRIPT_NAME=$(basename "$0")
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     INSTALL_SCRIPT="$SCRIPT_DIR/00-install-all.sh"
-    
+
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "⚠️  This script should not be executed directly"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -36,7 +36,7 @@ echo "=============================================="
 if ! command -v brew &> /dev/null; then
   echo "Installing Homebrew..."
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  
+
   # Add Homebrew to PATH for Apple Silicon Macs
   if [[ $(uname -m) == "arm64" ]]; then
     echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
@@ -46,13 +46,9 @@ else
   echo "Homebrew already installed."
 fi
 
-# Install zsh if not already installed (usually comes with macOS)
-if ! command -v zsh &> /dev/null; then
-  echo "Installing ZSH..."
-  brew install zsh
-else
-  echo "ZSH already installed."
-fi
+# Install zsh (usually comes with macOS, but we'll install via Homebrew if needed)
+echo "Installing ZSH..."
+brew install zsh
 
 # Install git and curl if not available
 if ! command -v git &> /dev/null; then
@@ -107,4 +103,3 @@ echo "============== [02] DONE ===================="
 echo "=============================================="
 echo "⚠️  Please close the terminal and open it again."
 echo "▶ Next, run: bash 03-install-zinit.sh"
-

@@ -32,46 +32,18 @@ echo "=============================================="
 echo "========= [09] INSTALLING CURSOR ============"
 echo "=============================================="
 
-INSTALLED=false
+echo "Installing Cursor via Homebrew..."
 
-# Check if Cursor is already installed
-if [ -d "/Applications/Cursor.app" ] || command -v cursor &> /dev/null; then
-    echo "✓ Cursor is already installed"
-    if [ -d "/Applications/Cursor.app" ]; then
-        if command -v defaults &> /dev/null; then
-            VERSION=$(defaults read /Applications/Cursor.app/Contents/Info.plist CFBundleShortVersionString 2>/dev/null || echo "unknown")
-            echo "  Version: $VERSION"
-        fi
-    fi
-    INSTALLED=true
-fi
-
-# Install via Homebrew if not installed
-if [ "$INSTALLED" = false ]; then
-    echo "Installing Cursor via Homebrew..."
-
-    if command -v brew &> /dev/null; then
-        if brew install --cask cursor; then
-            echo "✓ Cursor installed successfully via Homebrew"
-            INSTALLED=true
-        else
-            echo "⚠️  Homebrew installation failed"
-        fi
+if command -v brew &> /dev/null; then
+    # Reinstall if already installed
+    if brew list --cask cursor &> /dev/null; then
+        echo "Reinstalling Cursor..."
+        brew reinstall --cask cursor
     else
-        echo "⚠️  Homebrew not found"
-        echo ""
-        echo "Please install Cursor manually:"
-        echo "  1. Visit: https://cursor.sh"
-        echo "  2. Click 'Download' and select macOS"
-        echo "  3. Drag Cursor.app to Applications folder"
-        echo ""
-        echo "Or install Homebrew first, then run this script again"
-        exit 0
+        brew install --cask cursor
     fi
-fi
 
-if [ "$INSTALLED" = true ]; then
-    echo "Verifying installation..."
+    echo "✓ Cursor installed successfully via Homebrew"
 
     # Wait a moment for the app to be fully available
     sleep 2
@@ -89,7 +61,14 @@ if [ "$INSTALLED" = true ]; then
         echo "   This is normal - the app is installed, but CLI may need manual setup"
     fi
 else
-    echo "❌ Cursor installation failed"
+    echo "⚠️  Homebrew not found"
+    echo ""
+    echo "Please install Cursor manually:"
+    echo "  1. Visit: https://cursor.sh"
+    echo "  2. Click 'Download' and select macOS"
+    echo "  3. Drag Cursor.app to Applications folder"
+    echo ""
+    echo "Or install Homebrew first, then run this script again"
     exit 1
 fi
 

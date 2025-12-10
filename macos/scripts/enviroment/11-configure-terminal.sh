@@ -29,7 +29,7 @@ fi
 set -e
 
 echo "=============================================="
-echo "===== [13] CONFIGURE iTERM2 TERMINAL ========="
+echo "===== [11] CONFIGURE iTERM2 TERMINAL ========="
 echo "=============================================="
 
 # Check if Homebrew is installed
@@ -104,7 +104,7 @@ echo ""
 echo "7. Close Preferences and restart iTerm2 (⌘Q)"
 echo ""
 echo "=============================================="
-echo "============== [13] DONE ===================="
+echo "============== [11] DONE ===================="
 echo "=============================================="
 echo ""
 echo "🎉 INSTALLATION COMPLETE!"
