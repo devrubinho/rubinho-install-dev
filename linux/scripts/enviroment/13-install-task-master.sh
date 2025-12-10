@@ -29,108 +29,46 @@ fi
 set -e
 
 echo "=============================================="
-echo "===== [13] INSTALLING TASK MASTER (MCP) ====="
+echo "===== [13] INSTALLING TASK MASTER ==========="
 echo "=============================================="
-
-# ────────────────────────────────
-# Check Cursor Installation
-# ────────────────────────────────
-
-CURSOR_MCP_DIR="$HOME/.cursor"
-MCP_CONFIG_FILE="$CURSOR_MCP_DIR/mcp.json"
-
-if [ ! -d "$CURSOR_MCP_DIR" ]; then
-    echo "Creating Cursor MCP directory..."
-    mkdir -p "$CURSOR_MCP_DIR"
-fi
-
-# ────────────────────────────────
-# Install Task Master Automatically
-# ────────────────────────────────
-
-echo ""
-echo "📦 Installing Task Master MCP Server..."
 
 # Load NVM if available
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || true
 
-# Verify Node.js is available
-if ! command -v node &> /dev/null && ! command -v npm &> /dev/null; then
-    echo "⚠️  Node.js/npm not found. Task Master will be installed when Node.js is available."
-    echo "   The MCP configuration will be created, but you'll need Node.js to use it."
+# Check if Node.js/npm is available
+if ! command -v npm &> /dev/null; then
+    echo "⚠️  npm not found. Task Master requires Node.js/npm."
+    echo "   Please install Node.js first (script 05-install-node-nvm.sh)"
+    echo "   Task Master will be installed when Node.js is available."
+    exit 0
+fi
+
+echo "Installing Task Master globally..."
+
+# Check if already installed
+if command -v task-master-ai &> /dev/null; then
+    VERSION=$(task-master-ai --version 2>/dev/null || echo "unknown")
+    echo "✓ Task Master is already installed"
+    echo "  Version: $VERSION"
 else
-    echo "→ Installing Task Master globally..."
-    npm install -g task-master-ai
-    echo "✓ Task Master installed globally"
+    echo "→ Installing task-master-ai..."
+    if npm install -g task-master-ai; then
+        echo "✓ Task Master installed successfully"
+
+        # Verify installation
+        if command -v task-master-ai &> /dev/null; then
+            echo "✓ Task Master command is available"
+            task-master-ai --version 2>/dev/null || echo "⚠️  Version check failed, but Task Master is installed"
+        else
+            echo "⚠️  Task Master command not found in PATH"
+            echo "   You may need to restart your terminal or add npm global bin to PATH"
+        fi
+    else
+        echo "❌ Failed to install Task Master"
+        exit 1
+    fi
 fi
-
-# ────────────────────────────────
-# Create/Update MCP Configuration
-# ────────────────────────────────
-
-echo ""
-echo "📝 Configuring MCP settings..."
-
-if [ -f "$MCP_CONFIG_FILE" ]; then
-    echo "→ Found existing mcp.json, backing up..."
-    cp "$MCP_CONFIG_FILE" "$MCP_CONFIG_FILE.backup"
-fi
-
-# ────────────────────────────────
-# Create MCP Config
-# ────────────────────────────────
-
-# Use jq if available, otherwise use sed/awk
-if command -v jq &> /dev/null; then
-    # Create JSON with jq
-    cat > "$MCP_CONFIG_FILE" << EOF
-{
-  "mcpServers": {
-    "taskmaster-ai": {
-      "command": "task-master-ai"
-    }
-  }
-}
-EOF
-else
-    # Fallback: create JSON manually
-    cat > "$MCP_CONFIG_FILE" << EOF
-{
-  "mcpServers": {
-    "taskmaster-ai": {
-      "command": "task-master-ai"
-    }
-  }
-}
-EOF
-fi
-
-echo "→ Created/updated mcp.json at: $MCP_CONFIG_FILE"
-echo ""
-
-# ────────────────────────────────
-# Instructions
-# ────────────────────────────────
-
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "📋 Next Steps:"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo ""
-echo "1. ⚙️  Enable Task Master in Cursor:"
-echo "   - Open Cursor Settings (Ctrl+,)"
-echo "   - Go to 'MCP' tab"
-echo "   - Enable 'taskmaster-ai' toggle"
-echo ""
-echo "2. 🚀 Initialize Task Master in your project:"
-echo "   - Open Cursor AI chat"
-echo "   - Type: 'Inicializar taskmaster-ai no meu projeto'"
-echo ""
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo ""
-echo "📚 Documentation: https://docs.task-master.dev/"
-echo "🌐 Website: https://www.task-master.dev/"
-echo ""
 
 echo "=============================================="
 echo "============== [13] DONE ===================="

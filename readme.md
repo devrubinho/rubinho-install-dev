@@ -9,7 +9,7 @@
 
 **Complete development environment configurations for Linux and macOS**
 
-[🇺🇸](#) • [🇧🇷](#-1)
+[🇺🇸](#) • [🇧🇷](#-brasil)
 
 </div>
 
@@ -40,7 +40,7 @@ git clone https://github.com/devrubinho/rubinho-scripts.git
 cd rubinho-scripts
 ```
 
-#### 2. Use the Interactive Menu (Recommended)
+#### 2. Run the Installation Script (Recommended)
 
 The easiest way to get started is using the main `run.sh` script:
 
@@ -48,10 +48,7 @@ The easiest way to get started is using the main `run.sh` script:
 bash run.sh
 ```
 
-This will show you an interactive menu with options to:
-- 📦 **Installation Module**: Install and configure all development tools
-- 🧹 **Cleanup Module**: Analyze disk space and clean up unnecessary files
-- 🛠️ **Fix Linux User** (Linux only): Diagnose and fix user login issues
+This will start the installation process for your development environment.
 
 #### 3. Manual Installation (Alternative)
 
@@ -73,7 +70,7 @@ bash 00-install-all.sh
 ```bash
 cd work
 cp .env.example .env  # Configure first
-# See work/readme.md for details
+# Configure your work-specific environment variables
 ```
 
 ---
@@ -82,7 +79,6 @@ cp .env.example .env  # Configure first
 
 - [🐧 Linux Installation Guide](#-linux-installation)
 - [🍎 macOS Installation Guide](#-macos-installation)
-- [🧹 Disk Space Manager](#-disk-space-manager)
 - [📖 Using run.sh](#-using-runsh)
 - [📋 Complete Script Listing](#-complete-script-listing)
 - [🐛 Troubleshooting](#-troubleshooting)
@@ -169,76 +165,15 @@ bash 16-install-tableplus.sh
 
 ---
 
-### 🧹 Disk Space Manager
-
-Professional disk space analysis and cleanup scripts for **Linux** and **macOS**. Analyze what's taking up space and safely clean development caches, temporary files, and more.
-
-#### 🌟 Features
-
-**📊 Space Analysis (`analyze_space.sh`)**
-- Top 100 largest folders and files in your system
-- Per-user breakdown (home directory, caches, trash, logs, Xcode data)
-- Number of `node_modules` and `.next` folders
-- Color-coded ranking (top 10 in red, 11-30 in yellow, rest in blue)
-- Disk space summary with capacity, used, and available space
-
-**🧹 Space Cleanup (`clean_space.sh`)**
-- **Docker**: All containers, images, volumes, and networks
-- **Node.js/JavaScript**: All `node_modules` and `.next` folders, NX/Yarn/npm caches
-- **Xcode** (macOS only): DerivedData, old archives, caches, old logs
-- **System**: All user trash bins, application caches, system logs, temporary files
-- **Development Tools**: Package manager caches, npm/pip caches
-
-#### 📋 Requirements
-
-- **Linux** or **macOS** (any recent version)
-- **Bash** (pre-installed on both systems)
-- **sudo access** (for system-wide operations)
-
-#### 🚀 Usage
-
-**Analyze Disk Space:**
-```bash
-# Without sudo (limited to accessible areas)
-./analyze_space.sh
-
-# With sudo (complete system analysis)
-sudo ./analyze_space.sh
-```
-
-**Clean Disk Space:**
-```bash
-# Current user only
-./clean_space.sh
-
-# All users (requires sudo)
-sudo ./clean_space.sh
-```
-
-⚠️ **Warning**: The cleanup script will remove development files! Projects will need to reinstall dependencies (`npm install`, etc.) after cleanup.
-
-#### 🛡️ Safety Features
-
-- ✅ Confirmation required before any deletion
-- ✅ Shows exactly what will be removed before proceeding
-- ✅ Per-user separation
-- ✅ OS verification (macOS scripts only run on macOS, Linux scripts only run on Linux)
-- ✅ Detailed logging of freed space
-- ✅ Keeps essential system files
-
----
-
 ### 📖 Using run.sh
 
-The `run.sh` script is the main entry point for managing your development environment. It provides an intuitive menu-driven interface for all operations.
+The `run.sh` script is the main entry point for installing your development environment. It automatically detects your platform and runs the appropriate installation script.
 
 #### Features
 
 - **Platform Detection**: Automatically detects Linux or macOS
-- **Interactive Menus**: Easy-to-use menu system
-- **Installation Management**: Install tools with per-tool confirmation
-- **Disk Space Management**: Analyze and clean up disk space
-- **Linux User Fix**: Diagnose and fix login issues (Linux only)
+- **Environment Configuration**: Sets up required environment variables (Git name/email)
+- **Automated Installation**: Installs and configures all development tools in sequence
 
 #### Usage
 
@@ -284,9 +219,9 @@ Runs all installation scripts in sequence automatically.
 | **10-configure-file-watchers.sh** (macOS) | Configures file watcher limits |
 | **11-configure-ssh.sh** (Linux) | Configures SSH for Git |
 | **12-configure-inotify.sh** (Linux) | Configures inotify limits for file watching |
-| **12-install-task-master.sh** (macOS) | Installs and configures Task Master AI |
+| **12-install-task-master.sh** (macOS) | Installs Task Master AI globally |
 | **12-configure-cursor.sh** (macOS) | Applies Cursor configurations |
-| **13-install-task-master.sh** (Linux) | Installs and configures Task Master AI |
+| **13-install-task-master.sh** (Linux) | Installs Task Master AI globally |
 | **14-configure-cursor.sh** (Linux) | Applies Cursor configurations |
 | **13-install-docker.sh** (macOS) | Installs Docker Desktop |
 | **14-configure-terminal.sh** (macOS) | Configures iTerm2 with Dracula theme |
@@ -331,7 +266,7 @@ See [work/.env.example](work/.env.example) for complete list.
 rubinho-scripts/
 ├── .gitignore               # Protects sensitive files
 ├── LICENSE                  # MIT License
-├── README.md                # This file
+├── readme.md                # This file
 ├── .env.example             # Environment variables template (optional)
 │
 ├── linux/                   # 🐧 Linux setup
@@ -341,18 +276,12 @@ rubinho-scripts/
 │   │   ├── cursor-keyboard.json
 │   │   └── zsh-config
 │   └── scripts/
-│       ├── enviroment/      # Setup scripts (01-17)
-│       └── utils/           # Disk space tools
-│           ├── analyze_space.sh
-│           └── clean_space.sh
+│       └── enviroment/      # Setup scripts (01-17)
 │
 ├── macos/                   # 🍎 macOS setup
 │   ├── config/              # Dotfiles & themes
 │   └── scripts/
-│       ├── enviroment/      # Setup scripts (01-16)
-│       └── utils/           # Disk space tools
-│           ├── analyze_space.sh
-│           └── clean_space.sh
+│       └── enviroment/      # Setup scripts (01-16)
 │
 └── work/                    # 🏢 Work environment (optional)
     ├── .env                 # Your config (gitignored)
@@ -405,11 +334,9 @@ chmod +x macos/scripts/enviroment/*.sh
 **Problem:** Task Master commands fail or show "No tasks found"
 
 **Solution:**
-1. Verify Task Master installation: `npx -y task-master-ai --version`
-2. Check MCP configuration in `~/.cursor/mcp.json`
-3. Restart Cursor IDE
-4. Verify Task Master is enabled in Cursor settings (MCP tab)
-5. Initialize Task Master in your project: `npx -y task-master-ai init`
+1. Verify Task Master installation: `task-master-ai --version`
+2. If not found, reinstall: `npm install -g task-master-ai`
+3. Initialize Task Master in your project: `task-master-ai init`
 
 ---
 
@@ -435,29 +362,15 @@ A: Scripts are tested on Ubuntu/Debian. For other distributions, you may need to
 A: Depends on your internet speed and system. Typically 15-30 minutes for a full installation.
 
 **Q: Can I install tools selectively?**
-A: Yes! Use `run.sh` Installation Module - it asks for each tool individually.
+A: Yes! You can run individual installation scripts manually from `linux/scripts/enviroment/` or `macos/scripts/enviroment/` directories.
 
 **Q: What if a tool installation fails?**
 A: The script will show an error message. Fix the issue and re-run. The script will skip already-installed tools.
-
-#### Cleanup
-
-**Q: Is cleanup safe?**
-A: Yes, but always review what will be deleted. The script shows previews before deletion.
-
-**Q: Will cleanup delete my projects?**
-A: No. It only removes build artifacts (node_modules, dist, build folders), caches, temporary files, and Docker containers/images (if you confirm).
-
-**Q: How much space can I free?**
-A: Typically 5-50 GB depending on your development setup. Docker images can take significant space.
 
 ---
 
 ### 📚 Additional Resources
 
-- [Linux-specific documentation](linux/readme.md)
-- [macOS-specific documentation](macos/readme.md)
-- [Work environment setup](work/readme.md)
 - [Task Master documentation](https://docs.task-master.dev/)
 
 ---
@@ -477,7 +390,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 🇧🇷
+## 🇧🇷 {#brasil}
 
 > Configurações completas de ambiente de desenvolvimento para **Linux** e **macOS**
 
@@ -502,7 +415,7 @@ git clone https://github.com/devrubinho/rubinho-scripts.git
 cd rubinho-scripts
 ```
 
-#### 2. Usar o Menu Interativo (Recomendado)
+#### 2. Executar o Script de Instalação (Recomendado)
 
 A forma mais fácil de começar é usar o script principal `run.sh`:
 
@@ -510,10 +423,7 @@ A forma mais fácil de começar é usar o script principal `run.sh`:
 bash run.sh
 ```
 
-Isso mostrará um menu interativo com opções para:
-- 📦 **Módulo de Instalação**: Instalar e configurar todas as ferramentas de desenvolvimento
-- 🧹 **Módulo de Limpeza**: Analisar espaço em disco e limpar arquivos desnecessários
-- 🛠️ **Corrigir Usuário Linux** (apenas Linux): Diagnosticar e corrigir problemas de login
+Isso iniciará o processo de instalação do seu ambiente de desenvolvimento.
 
 #### 3. Instalação Manual (Alternativa)
 
@@ -535,7 +445,7 @@ bash 00-install-all.sh
 ```bash
 cd work
 cp .env.example .env  # Configure primeiro
-# Veja work/readme.md para detalhes
+# Configure suas variáveis de ambiente específicas do trabalho
 ```
 
 ---
@@ -544,7 +454,6 @@ cp .env.example .env  # Configure primeiro
 
 - [🐧 Guia de Instalação Linux](#-instalação-linux)
 - [🍎 Guia de Instalação macOS](#-instalação-macos)
-- [🧹 Gerenciador de Espaço em Disco](#-gerenciador-de-espaço-em-disco)
 - [📖 Usando run.sh](#-usando-runsh)
 - [📋 Lista Completa de Scripts](#-lista-completa-de-scripts)
 - [🐛 Solução de Problemas](#-solução-de-problemas)
@@ -631,76 +540,15 @@ bash 16-install-tableplus.sh
 
 ---
 
-### 🧹 Gerenciador de Espaço em Disco
-
-Scripts profissionais de análise e limpeza de espaço em disco para **Linux** e **macOS**. Analise o que está ocupando espaço e limpe com segurança caches de desenvolvimento, arquivos temporários e muito mais.
-
-#### 🌟 Funcionalidades
-
-**📊 Análise de Espaço (`analyze_space.sh`)**
-- Top 100 maiores pastas e arquivos do sistema
-- Análise por usuário (diretório home, caches, lixeira, logs, dados do Xcode)
-- Número de pastas `node_modules` e `.next`
-- Classificação com cores (top 10 em vermelho, 11-30 em amarelo, resto em azul)
-- Resumo de espaço em disco com capacidade, usado e disponível
-
-**🧹 Limpeza de Espaço (`clean_space.sh`)**
-- **Docker**: Todos os containers, imagens, volumes e redes
-- **Node.js/JavaScript**: Todas as pastas `node_modules` e `.next`, caches NX/Yarn/npm
-- **Xcode** (apenas macOS): DerivedData, arquivos antigos, caches, logs antigos
-- **Sistema**: Todas as lixeiras de usuário, caches de aplicativos, logs do sistema, arquivos temporários
-- **Ferramentas de Desenvolvimento**: Caches de gerenciadores de pacotes, caches npm/pip
-
-#### 📋 Requisitos
-
-- **Linux** ou **macOS** (qualquer versão recente)
-- **Bash** (pré-instalado em ambos os sistemas)
-- **Acesso sudo** (para operações em todo o sistema)
-
-#### 🚀 Uso
-
-**Analisar Espaço em Disco:**
-```bash
-# Sem sudo (limitado a áreas acessíveis)
-./analyze_space.sh
-
-# Com sudo (análise completa do sistema)
-sudo ./analyze_space.sh
-```
-
-**Limpar Espaço em Disco:**
-```bash
-# Apenas usuário atual
-./clean_space.sh
-
-# Todos os usuários (requer sudo)
-sudo ./clean_space.sh
-```
-
-⚠️ **Aviso**: O script de limpeza removerá arquivos de desenvolvimento! Os projetos precisarão reinstalar dependências (`npm install`, etc.) após a limpeza.
-
-#### 🛡️ Recursos de Segurança
-
-- ✅ Confirmação necessária antes de qualquer exclusão
-- ✅ Mostra exatamente o que será removido antes de prosseguir
-- ✅ Separação por usuário
-- ✅ Verificação de SO (scripts macOS só rodam no macOS, scripts Linux só rodam no Linux)
-- ✅ Registro detalhado do espaço liberado
-- ✅ Mantém arquivos essenciais do sistema
-
----
-
 ### 📖 Usando run.sh
 
-O script `run.sh` é o ponto de entrada principal para gerenciar seu ambiente de desenvolvimento. Ele fornece uma interface intuitiva baseada em menus para todas as operações.
+O script `run.sh` é o ponto de entrada principal para instalar seu ambiente de desenvolvimento. Ele detecta automaticamente sua plataforma e executa o script de instalação apropriado.
 
 #### Funcionalidades
 
 - **Detecção de Plataforma**: Detecta automaticamente Linux ou macOS
-- **Menus Interativos**: Sistema de menus fácil de usar
-- **Gerenciamento de Instalação**: Instala ferramentas com confirmação individual
-- **Gerenciamento de Espaço em Disco**: Analisa e limpa espaço em disco
-- **Correção de Usuário Linux**: Diagnostica e corrige problemas de login (apenas Linux)
+- **Configuração de Ambiente**: Configura variáveis de ambiente necessárias (nome/email do Git)
+- **Instalação Automatizada**: Instala e configura todas as ferramentas de desenvolvimento em sequência
 
 #### Uso
 
@@ -746,9 +594,9 @@ Executa todos os scripts de instalação em sequência automaticamente.
 | **10-configure-file-watchers.sh** (macOS) | Configura limites de file watchers |
 | **11-configure-ssh.sh** (Linux) | Configura SSH para Git |
 | **12-configure-inotify.sh** (Linux) | Configura limites inotify para file watching |
-| **12-install-task-master.sh** (macOS) | Instala e configura Task Master AI |
+| **12-install-task-master.sh** (macOS) | Instala Task Master AI globalmente |
 | **12-configure-cursor.sh** (macOS) | Aplica configurações do Cursor |
-| **13-install-task-master.sh** (Linux) | Instala e configura Task Master AI |
+| **13-install-task-master.sh** (Linux) | Instala Task Master AI globalmente |
 | **14-configure-cursor.sh** (Linux) | Aplica configurações do Cursor |
 | **13-install-docker.sh** (macOS) | Instala Docker Desktop |
 | **14-configure-terminal.sh** (macOS) | Configura iTerm2 com tema Dracula |
@@ -793,7 +641,7 @@ Veja [work/.env.example](work/.env.example) para a lista completa.
 rubinho-scripts/
 ├── .gitignore               # Protege arquivos sensíveis
 ├── LICENSE                  # Licença MIT
-├── README.md                # Este arquivo
+├── readme.md                # Este arquivo
 ├── .env.example             # Template de variáveis de ambiente (opcional)
 │
 ├── linux/                   # 🐧 Configuração Linux
@@ -803,18 +651,12 @@ rubinho-scripts/
 │   │   ├── cursor-keyboard.json
 │   │   └── zsh-config
 │   └── scripts/
-│       ├── enviroment/      # Scripts de configuração (01-17)
-│       └── utils/           # Ferramentas de espaço em disco
-│           ├── analyze_space.sh
-│           └── clean_space.sh
+│       └── enviroment/      # Scripts de configuração (01-17)
 │
 ├── macos/                   # 🍎 Configuração macOS
 │   ├── config/              # Dotfiles e temas
 │   └── scripts/
-│       ├── enviroment/      # Scripts de configuração (01-16)
-│       └── utils/           # Ferramentas de espaço em disco
-│           ├── analyze_space.sh
-│           └── clean_space.sh
+│       └── enviroment/      # Scripts de configuração (01-16)
 │
 └── work/                    # 🏢 Ambiente de trabalho (opcional)
     ├── .env                 # Sua configuração (gitignored)
@@ -867,11 +709,9 @@ chmod +x macos/scripts/enviroment/*.sh
 **Problema:** Comandos do Task Master falham ou mostram "No tasks found"
 
 **Solução:**
-1. Verifique a instalação do Task Master: `npx -y task-master-ai --version`
-2. Verifique a configuração MCP em `~/.cursor/mcp.json`
-3. Reinicie o Cursor IDE
-4. Verifique se o Task Master está habilitado nas configurações do Cursor (aba MCP)
-5. Inicialize o Task Master no seu projeto: `npx -y task-master-ai init`
+1. Verifique a instalação do Task Master: `task-master-ai --version`
+2. Se não encontrado, reinstale: `npm install -g task-master-ai`
+3. Inicialize o Task Master no seu projeto: `task-master-ai init`
 
 ---
 
@@ -897,29 +737,15 @@ R: Os scripts são testados no Ubuntu/Debian. Para outras distribuições, você
 R: Depende da velocidade da sua internet e do sistema. Normalmente 15-30 minutos para uma instalação completa.
 
 **P: Posso instalar ferramentas seletivamente?**
-R: Sim! Use o Módulo de Instalação do `run.sh` - ele pergunta para cada ferramenta individualmente.
+R: Sim! Você pode executar scripts de instalação individuais manualmente dos diretórios `linux/scripts/enviroment/` ou `macos/scripts/enviroment/`.
 
 **P: E se a instalação de uma ferramenta falhar?**
 R: O script mostrará uma mensagem de erro. Corrija o problema e execute novamente. O script pulará ferramentas já instaladas.
-
-#### Limpeza
-
-**P: A limpeza é segura?**
-R: Sim, mas sempre revise o que será excluído. O script mostra prévias antes da exclusão.
-
-**P: A limpeza excluirá meus projetos?**
-R: Não. Ela apenas remove artefatos de build (node_modules, dist, pastas build), caches, arquivos temporários e containers/imagens Docker (se você confirmar).
-
-**P: Quanto espaço posso liberar?**
-R: Normalmente 5-50 GB dependendo da sua configuração de desenvolvimento. Imagens Docker podem ocupar muito espaço.
 
 ---
 
 ### 📚 Recursos Adicionais
 
-- [Documentação específica do Linux](linux/readme.md)
-- [Documentação específica do macOS](macos/readme.md)
-- [Configuração do ambiente de trabalho](work/readme.md)
 - [Documentação do Task Master](https://docs.task-master.dev/)
 
 ---
