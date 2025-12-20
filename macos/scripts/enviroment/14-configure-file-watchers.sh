@@ -29,41 +29,43 @@ fi
 set -e
 
 echo "=============================================="
-echo "========= [08] INSTALLING JETBRAINS FONT ====="
+echo "========= [14] CONFIGURING VS CODE =========="
 echo "=============================================="
 
-# Install required packages via Homebrew
-if ! command -v brew &> /dev/null; then
-  echo "❌ Homebrew is required. Please install it first."
+# Determine VS Code user directory based on OS
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  VSCODE_USER_DIR="$HOME/.config/Code/User"
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  VSCODE_USER_DIR="$HOME/Library/Application Support/Code/User"
+else
+  echo "❌ Operating system not automatically supported."
   exit 1
 fi
 
-if ! command -v wget &> /dev/null; then
-  echo "Installing wget..."
-  brew install wget
-fi
+mkdir -p "$VSCODE_USER_DIR"
 
-FONT_DIR="$HOME/Library/Fonts"
-mkdir -p "$FONT_DIR"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SETTINGS_PATH="$VSCODE_USER_DIR/settings.json"
+KEYBINDINGS_PATH="$VSCODE_USER_DIR/keybindings.json"
 
-# Check if font is already installed
-if ls "$FONT_DIR/JetBrainsMono"*.ttf 2>/dev/null | head -1 > /dev/null; then
-    echo "✓ JetBrainsMono font is already installed"
-    echo "  Skipping download and installation"
+echo "Detected VS Code directory: $VSCODE_USER_DIR"
+echo ""
+
+echo "Copying settings.json..."
+cp "$SCRIPT_DIR/../../config/user-settings.json" "$SETTINGS_PATH"
+echo "→ settings.json updated successfully!"
+
+echo "Copying keybindings.json..."
+if cp "$SCRIPT_DIR/../../config/cursor-keyboard.json" "$KEYBINDINGS_PATH" 2>/dev/null; then
+    echo "→ keybindings.json updated successfully!"
 else
-echo "Downloading JetBrainsMono Nerd Font..."
-cd /tmp
-wget -q https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip
-
-echo "Extracting font..."
-unzip -o JetBrainsMono.zip -d "$FONT_DIR" > /dev/null
-rm JetBrainsMono.zip
-
-    echo "✓ Font installed successfully."
-    echo "  You may need to restart your terminal/editor to see the font."
+    echo "⚠️  keybindings.json not found (optional file, skipping)"
 fi
 
 echo "=============================================="
-echo "============== [08] DONE ===================="
+echo "============== [14] DONE ===================="
 echo "=============================================="
-echo "▶ Next, run: bash 09-install-cursor.sh"
+echo "🎉 VS Code configured successfully!"
+echo "   Open VS Code again to apply everything."
+echo ""
+echo "▶ Next, run: bash 15-configure-cursor.sh"

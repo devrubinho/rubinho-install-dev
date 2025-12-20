@@ -29,34 +29,41 @@ fi
 set -e
 
 echo "=============================================="
-echo "========= [22] CONFIGURING ZED ================"
+echo "========= [08] INSTALLING CASKAYDIA COVE FONT"
 echo "=============================================="
 
-# Determine Zed user directory based on OS
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  ZED_USER_DIR="$HOME/.config/zed"
-else
-  echo "❌ This script is only for macOS."
+# Install required packages via Homebrew
+if ! command -v brew &> /dev/null; then
+  echo "❌ Homebrew is required. Please install it first."
   exit 1
 fi
 
-mkdir -p "$ZED_USER_DIR"
+if ! command -v wget &> /dev/null; then
+  echo "Installing wget..."
+  brew install wget
+fi
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SETTINGS_PATH="$ZED_USER_DIR/settings.json"
+FONT_DIR="$HOME/Library/Fonts"
+mkdir -p "$FONT_DIR"
 
-echo "Detected Zed directory: $ZED_USER_DIR"
-echo ""
+# Check if font is already installed
+if ls "$FONT_DIR/CaskaydiaCove"*.ttf 2>/dev/null | head -1 > /dev/null; then
+    echo "✓ CaskaydiaCove Nerd Font is already installed"
+    echo "  Skipping download and installation"
+else
+echo "Downloading CaskaydiaCove Nerd Font..."
+cd /tmp
+wget -q https://github.com/ryanoasis/nerd-fonts/releases/latest/download/CascadiaCode.zip
 
-echo "Copying settings.json..."
-cp "$SCRIPT_DIR/../../config/zed/settings.json" "$SETTINGS_PATH"
-echo "→ settings.json updated successfully!"
+echo "Extracting font..."
+unzip -o CascadiaCode.zip -d "$FONT_DIR" > /dev/null
+rm CascadiaCode.zip
+
+    echo "✓ Font installed successfully."
+    echo "  You may need to restart your terminal/editor to see the font."
+fi
 
 echo "=============================================="
-echo "============== [22] DONE ===================="
+echo "============== [08] DONE ===================="
 echo "=============================================="
-echo "🎉 Zed configured successfully!"
-echo "   Open Zed again to apply everything."
-echo ""
-echo "▶ Next, run: bash 23-install-something-else.sh"
-
+echo "▶ Next, run: bash 09-install-vscode.sh"

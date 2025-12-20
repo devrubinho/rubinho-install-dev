@@ -267,7 +267,7 @@ run_script_with_check "06-install-yarn.sh" "Yarn" "command -v yarn" "yarn --vers
 run_script_with_check "07-install-tools.sh" "Development Tools" "true" "" "false"
 
 # Font installation
-run_script_with_check "08-install-font-jetbrains.sh" "JetBrains Font" "ls \"$HOME/Library/Fonts/JetBrainsMono\"*.ttf 2>/dev/null | head -1" "" "false"
+run_script_with_check "08-install-font-caskaydia.sh" "CaskaydiaCove Nerd Font" "ls \"$HOME/Library/Fonts/CaskaydiaCove\"*.ttf 2>/dev/null | head -1" "" "false"
 
 echo ""
 echo "=============================================="
@@ -275,44 +275,44 @@ echo "PHASE 4: Application Setup"
 echo "=============================================="
 
 # Part 4: Applications and configuration
+# VS Code check
+run_script_with_check "09-install-vscode.sh" "Visual Studio Code" "[ -d \"/Applications/Visual Studio Code.app\" ] || command -v code" "[ -d \"/Applications/Visual Studio Code.app\" ] && defaults read \"/Applications/Visual Studio Code.app/Contents/Info.plist\" CFBundleShortVersionString 2>/dev/null || echo 'unknown'"
+
 # Cursor check
-run_script_with_check "09-install-cursor.sh" "Cursor" "[ -d \"/Applications/Cursor.app\" ] || command -v cursor" "[ -d \"/Applications/Cursor.app\" ] && defaults read /Applications/Cursor.app/Contents/Info.plist CFBundleShortVersionString 2>/dev/null || echo 'unknown'"
+run_script_with_check "10-install-cursor.sh" "Cursor" "[ -d \"/Applications/Cursor.app\" ] || command -v cursor" "[ -d \"/Applications/Cursor.app\" ] && defaults read /Applications/Cursor.app/Contents/Info.plist CFBundleShortVersionString 2>/dev/null || echo 'unknown'"
 
 # Claude Code CLI check (requires Node.js)
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || true
-run_script_with_check "10-install-claude.sh" "Claude Code CLI" "command -v claude || npm list -g @anthropic-ai/claude-code &>/dev/null" "claude --version 2>&1 | head -1 || npm list -g @anthropic-ai/claude-code 2>&1 | grep claude-code | head -1"
+run_script_with_check "11-install-claude.sh" "Claude Code CLI" "command -v claude || npm list -g @anthropic-ai/claude-code &>/dev/null" "claude --version 2>&1 | head -1 || npm list -g @anthropic-ai/claude-code 2>&1 | grep claude-code | head -1"
 
 # Configuration scripts
-run_script_with_check "11-configure-terminal.sh" "Terminal Configuration" "true" "" "false"
+run_script_with_check "12-configure-terminal.sh" "Terminal Configuration" "true" "" "false"
 
-run_script_with_check "12-configure-ssh.sh" "SSH Configuration" "true" "" "false"
+run_script_with_check "13-configure-ssh.sh" "SSH Configuration" "true" "" "false"
 
-run_script_with_check "13-configure-file-watchers.sh" "File Watchers Configuration" "true" "" "false"
+run_script_with_check "14-configure-file-watchers.sh" "File Watchers Configuration" "true" "" "false"
+
+# VS Code configuration
+run_script_with_check "15-configure-vscode.sh" "VS Code Configuration" "true" "" "false"
 
 # Cursor configuration
-run_script_with_check "15-configure-cursor.sh" "Cursor Configuration" "true" "" "false"
+run_script_with_check "16-configure-cursor.sh" "Cursor Configuration" "true" "" "false"
 
 # Docker check
-run_script_with_check "16-install-docker.sh" "Docker" "command -v docker" "docker --version 2>&1 | head -1"
+run_script_with_check "17-install-docker.sh" "Docker" "command -v docker" "docker --version 2>&1 | head -1"
 
 # Insomnia check (macOS: check app or brew cask, Linux: check command)
-run_script_with_check "17-install-insomnia.sh" "Insomnia" "command -v insomnia || [ -d \"/Applications/Insomnia.app\" ] || brew list --cask insomnia &>/dev/null" "insomnia --version 2>&1 | head -1 || ([ -d \"/Applications/Insomnia.app\" ] && defaults read /Applications/Insomnia.app/Contents/Info.plist CFBundleShortVersionString 2>/dev/null || echo 'unknown')"
+run_script_with_check "18-install-insomnia.sh" "Insomnia" "command -v insomnia || [ -d \"/Applications/Insomnia.app\" ] || brew list --cask insomnia &>/dev/null" "insomnia --version 2>&1 | head -1 || ([ -d \"/Applications/Insomnia.app\" ] && defaults read /Applications/Insomnia.app/Contents/Info.plist CFBundleShortVersionString 2>/dev/null || echo 'unknown')"
 
 # TablePlus check (macOS only)
-run_script_with_check "18-install-tableplus.sh" "TablePlus" "command -v tableplus || [ -d \"/Applications/TablePlus.app\" ]" "[ -d \"/Applications/TablePlus.app\" ] && defaults read /Applications/TablePlus.app/Contents/Info.plist CFBundleShortVersionString 2>/dev/null || echo 'unknown'"
+run_script_with_check "19-install-tableplus.sh" "TablePlus" "command -v tableplus || [ -d \"/Applications/TablePlus.app\" ]" "[ -d \"/Applications/TablePlus.app\" ] && defaults read /Applications/TablePlus.app/Contents/Info.plist CFBundleShortVersionString 2>/dev/null || echo 'unknown'"
 
 # Cursor CLI check
-run_script_with_check "19-install-cursor-cli.sh" "Cursor CLI" "command -v cursor-agent" "cursor-agent --version 2>&1 | head -1"
+run_script_with_check "20-install-cursor-cli.sh" "Cursor CLI" "command -v cursor-agent" "cursor-agent --version 2>&1 | head -1"
 
 # Gemini CLI check (requires Node.js)
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || true
-run_script_with_check "20-install-gemini-cli.sh" "Gemini CLI" "command -v gemini || npm list -g @google/gemini-cli &>/dev/null" "gemini --version 2>&1 | head -1 || npm list -g @google/gemini-cli 2>&1 | grep gemini-cli | head -1"
-
-# Zed check
-run_script_with_check "21-install-zed.sh" "Zed" "command -v zed || [ -d \"/Applications/Zed.app\" ]" "zed --version 2>&1 | head -1 || ([ -d \"/Applications/Zed.app\" ] && defaults read /Applications/Zed.app/Contents/Info.plist CFBundleShortVersionString 2>/dev/null || echo 'unknown')"
-
-# Zed configuration
-run_script_with_check "22-configure-zed.sh" "Zed Configuration" "true" "" "false"
+run_script_with_check "21-install-gemini-cli.sh" "Gemini CLI" "command -v gemini || npm list -g @google/gemini-cli &>/dev/null" "gemini --version 2>&1 | head -1 || npm list -g @google/gemini-cli 2>&1 | grep gemini-cli | head -1"
 
 echo ""
 echo "=============================================="
@@ -363,25 +363,26 @@ echo "   → yarn -v"
 echo "   → docker --version"
 echo "   → zsh --version"
 echo "   → starship --version"
+echo "   → code --version"
+echo "   → cursor --version"
 echo "   → cursor-agent --version"
 echo "   → gemini --version"
-echo "   → zed --version"
 echo ""
 echo "4️⃣  DOCKER SETUP (if Docker was installed)"
 echo "   → Start Docker Desktop application"
 echo "   → Wait for it to fully start"
 echo "   → Verify with: docker ps"
 echo ""
-echo "5️⃣  CURSOR IDE CONFIGURATION"
+echo "5️⃣  VS CODE CONFIGURATION"
+echo "   → Open Visual Studio Code"
+echo "   → Settings should be automatically applied"
+echo "   → Install recommended extensions: ESLint, GitLens, Tailwind CSS"
+echo "   → If needed, restart VS Code to load all configurations"
+echo ""
+echo "6️⃣  CURSOR IDE CONFIGURATION"
 echo "   → Open Cursor IDE"
 echo "   → Settings should be automatically applied"
 echo "   → If needed, restart Cursor to load all configurations"
-echo ""
-echo "6️⃣  ZED EDITOR CONFIGURATION"
-echo "   → Open Zed editor"
-echo "   → Configure AI agents (Claude, Gemini CLI, Cursor CLI)"
-echo "   → Press Cmd-? to open agent panel"
-echo "   → Click '+' and select your preferred agent"
 echo ""
 echo "7️⃣  GEMINI CLI - ENABLE GEMINI 3"
 echo "   → Run: gemini"
